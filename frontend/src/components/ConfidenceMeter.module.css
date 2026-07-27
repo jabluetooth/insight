@@ -1,0 +1,86 @@
+/* Extracted from the /diagnose result card so the dashboard's diagnosis log
+ * (per-instance) can show the exact same confidence-tier visual instead of
+ * rebuilding it — see PRD calibration requirement (§2.1) and FR-7: a
+ * low-confidence result must visibly read as hedged everywhere it appears,
+ * not just on the one page it was first built for. */
+
+.confidenceHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.confidencePercent {
+  font-family: var(--font-mono);
+  font-weight: 600;
+}
+
+.confidenceTierBadge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+}
+
+.tierHigh {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+  border: 1px solid var(--color-success-border);
+}
+
+.tierModerate {
+  background: var(--color-warning-bg);
+  color: var(--color-warning);
+  border: 1px solid var(--color-warning-border);
+}
+
+.tierLow {
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
+  border: 1px solid var(--color-danger-border);
+}
+
+.tierUnknown {
+  background: var(--color-bg-subtle);
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
+}
+
+/* Custom confidence bar: a plain <meter> is unreliable here — Chromium
+ * renders it solid green for any value unless low/high/optimum thresholds
+ * are set, which would make a 25% and a 95% confidence result look visually
+ * identical. This div pair is fully colored by us (ARIA `meter` role keeps
+ * it accessible) so the fill color and width both track the real value. */
+.confidenceMeterTrack {
+  width: 100%;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--color-bg-subtle);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+}
+
+.confidenceMeterFill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.2s ease;
+}
+
+.fillHigh {
+  background: var(--color-success);
+}
+
+.fillModerate {
+  background: var(--color-warning);
+}
+
+.fillLow {
+  background: var(--color-danger);
+}
+
+.fillUnknown {
+  background: var(--color-text-muted);
+}

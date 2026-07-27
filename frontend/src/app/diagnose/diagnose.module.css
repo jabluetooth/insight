@@ -1,0 +1,357 @@
+.page {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-5) var(--space-8);
+}
+
+.intro h1 {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  margin: 0 0 var(--space-3) 0;
+}
+
+.intro p {
+  color: var(--color-text-muted);
+  max-width: 68ch;
+}
+
+/* ---- Form shell ---- */
+
+.form {
+  margin-top: var(--space-6);
+  background: var(--color-bg-raised);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-card);
+}
+
+.fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0 0 var(--space-5) 0;
+}
+
+.legend {
+  font-weight: 600;
+  padding: 0 0 var(--space-3) 0;
+  font-size: 1rem;
+}
+
+.modeToggle {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.modeOption {
+  position: relative;
+}
+
+.modeOption input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+
+.modeOptionLabel {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  background: var(--color-bg-subtle);
+}
+
+.modeOption input:checked + .modeOptionLabel {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 10%, var(--color-bg-raised));
+  font-weight: 600;
+}
+
+.modeOption input:focus-visible + .modeOptionLabel {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.field {
+  margin-bottom: var(--space-4);
+}
+
+.label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: var(--space-2);
+  font-size: 0.925rem;
+}
+
+.hint {
+  display: block;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  margin-top: var(--space-1);
+}
+
+.input {
+  width: 100%;
+  min-height: 44px;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.input:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.input[aria-invalid="true"] {
+  border-color: var(--color-danger);
+}
+
+.fieldError {
+  color: var(--color-danger);
+  font-size: 0.85rem;
+  margin-top: var(--space-1);
+  font-weight: 500;
+}
+
+.fileInputWrapper {
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  background: var(--color-bg-subtle);
+}
+
+.fileName {
+  margin-top: var(--space-2);
+  font-size: 0.9rem;
+  font-family: var(--font-mono);
+  word-break: break-all;
+}
+
+.submitRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.submitButton {
+  min-height: 44px;
+  padding: var(--space-3) var(--space-6);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: var(--color-primary);
+  color: var(--color-primary-contrast);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.submitButton:hover:not(:disabled) {
+  background: var(--color-primary-dark);
+}
+
+.submitButton:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  margin-right: var(--space-2);
+  vertical-align: -3px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---- Status / result region ---- */
+
+.statusRegion {
+  margin-top: var(--space-6);
+}
+
+.banner {
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-start;
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+}
+
+.bannerLoading {
+  composes: banner;
+  background: var(--color-info-bg);
+  border-color: var(--color-info-border);
+  color: var(--color-info);
+}
+
+.bannerError {
+  composes: banner;
+  background: var(--color-danger-bg);
+  border-color: var(--color-danger-border);
+  color: var(--color-danger);
+}
+
+.bannerTransient {
+  composes: banner;
+  background: var(--color-warning-bg);
+  border-color: var(--color-warning-border);
+  color: var(--color-warning);
+}
+
+.bannerTitle {
+  font-weight: 700;
+  margin: 0 0 var(--space-1) 0;
+  color: var(--color-text);
+}
+
+.bannerBody {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 0.95rem;
+}
+
+.rawDetails {
+  margin-top: var(--space-3);
+  font-size: 0.85rem;
+}
+
+.rawDetails summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.rawDetails pre {
+  margin-top: var(--space-2);
+  padding: var(--space-3);
+  background: var(--color-bg-subtle);
+  border-radius: var(--radius-sm);
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ---- Diagnosis result card ---- */
+
+.resultCard {
+  background: var(--color-bg-raised);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-card);
+}
+
+.resultCard:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 4px;
+}
+
+.resultHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.resultHeading {
+  font-size: 1.15rem;
+  margin: 0;
+}
+
+.categoryBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: var(--color-bg-subtle);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+}
+
+.row {
+  margin-bottom: var(--space-4);
+}
+
+.rowLabel {
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-muted);
+  margin: 0 0 var(--space-1) 0;
+}
+
+.nodeValue {
+  font-family: var(--font-mono);
+  font-size: 1rem;
+}
+
+.explanation {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.hedgeNote {
+  display: block;
+  margin-top: var(--space-2);
+  font-size: 0.85rem;
+  font-style: italic;
+  color: var(--color-text-muted);
+}
+
+/* Confidence badge/meter styles moved to
+ * src/components/ConfidenceMeter.module.css so /dashboard/instances/[id]
+ * can reuse the exact same visual — see ConfidenceMeter.tsx. */
+
+.suggestedFix {
+  margin: 0;
+  padding: var(--space-4);
+  background: var(--color-bg-subtle);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.lowConfidenceFixWrapper {
+  border: 1px dashed var(--color-warning-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+}
+
+.lowConfidenceFixNote {
+  margin: 0 0 var(--space-2) 0;
+  font-size: 0.85rem;
+  font-style: italic;
+  color: var(--color-warning);
+}

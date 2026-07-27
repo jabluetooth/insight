@@ -1,0 +1,56 @@
+.page {
+  max-width: 420px;
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-5);
+}
+
+.card {
+  background: var(--color-bg-raised);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-card);
+}
+
+.heading {
+  font-size: 1.4rem;
+  margin: 0 0 var(--space-3) 0;
+}
+
+.body {
+  color: var(--color-text-muted);
+  margin: 0 0 var(--space-5) 0;
+}
+
+.providerButton {
+  width: 100%;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-subtle);
+  color: var(--color-text);
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  margin-bottom: var(--space-3);
+}
+
+.providerButton:hover {
+  background: var(--color-bg);
+  border-color: var(--color-primary);
+}
+
+.icon {
+  flex-shrink: 0;
+}
+
+.fineprint {
+  margin: var(--space-5) 0 0 0;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}

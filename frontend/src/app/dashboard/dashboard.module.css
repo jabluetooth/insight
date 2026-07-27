@@ -1,0 +1,367 @@
+.shell {
+  min-height: 100%;
+}
+
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-5);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-bg-subtle);
+}
+
+.topBarNav {
+  display: flex;
+  gap: var(--space-4);
+}
+
+.topBarLink {
+  font-weight: 600;
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.topBarLink:hover {
+  color: var(--color-primary);
+}
+
+.topBarUser {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.userEmail {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.signOutButton {
+  min-height: 36px;
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-raised);
+  color: var(--color-text);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.signOutButton:hover {
+  border-color: var(--color-danger-border);
+  color: var(--color-danger);
+}
+
+.content {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-5) var(--space-8);
+}
+
+/* ---- Instance list ---- */
+
+.pageHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+.pageHeading {
+  font-size: clamp(1.4rem, 3vw, 1.8rem);
+  margin: 0 0 var(--space-1) 0;
+}
+
+.pageSubtitle {
+  color: var(--color-text-muted);
+  margin: 0;
+  max-width: 60ch;
+}
+
+.primaryLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-md);
+  background: var(--color-primary);
+  color: var(--color-primary-contrast);
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.primaryLink:hover {
+  background: var(--color-primary-dark);
+}
+
+.emptyState {
+  text-align: center;
+  padding: var(--space-8) var(--space-5);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-subtle);
+}
+
+.emptyStateTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 var(--space-2) 0;
+}
+
+.emptyStateBody {
+  color: var(--color-text-muted);
+  max-width: 48ch;
+  margin: 0 auto var(--space-5) auto;
+}
+
+.instanceGrid {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.instanceCard {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-raised);
+  box-shadow: var(--shadow-card);
+}
+
+.instanceMain {
+  min-width: 0;
+  flex: 1 1 320px;
+}
+
+.instanceLabelRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-1);
+}
+
+.instanceLabelLink {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.instanceLabelLink:hover {
+  color: var(--color-primary);
+}
+
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px var(--space-2);
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.statusActive {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+  border: 1px solid var(--color-success-border);
+}
+
+.statusRevoked {
+  background: var(--color-bg-subtle);
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
+}
+
+.instanceBaseUrl {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  word-break: break-all;
+  margin: 0 0 var(--space-1) 0;
+}
+
+.instanceMeta {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.instanceActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex: 0 0 auto;
+}
+
+.errorCountBadge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 64px;
+}
+
+.errorCountNumber {
+  font-size: 1.4rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+}
+
+.errorCountLabel {
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.revokeButton {
+  min-height: 40px;
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--color-danger-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-raised);
+  color: var(--color-danger);
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.revokeButton:hover:not(:disabled) {
+  background: var(--color-danger-bg);
+}
+
+.revokeButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.revokeErrorText {
+  color: var(--color-danger);
+  font-size: 0.8rem;
+  margin-top: 4px;
+}
+
+/* ---- Error banner (data load failure) ---- */
+
+.loadError {
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-danger-border);
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
+}
+
+.loadErrorTitle {
+  font-weight: 700;
+  margin: 0 0 var(--space-1) 0;
+  color: var(--color-text);
+}
+
+.loadErrorBody {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 0.9rem;
+}
+
+/* ---- Diagnosis log (instance detail) ---- */
+
+.backLink {
+  display: inline-block;
+  margin-bottom: var(--space-4);
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+
+.backLink:hover {
+  color: var(--color-primary);
+}
+
+.diagnosisList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.diagnosisCard {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-raised);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-card);
+}
+
+.diagnosisHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.diagnosisTimestamp {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+}
+
+.diagnosisRow {
+  margin-bottom: var(--space-3);
+}
+
+.diagnosisRowLabel {
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-muted);
+  margin: 0 0 4px 0;
+}
+
+.categoryBadgeMuted {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: var(--color-bg-subtle);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+}
+
+.nodeValueMono {
+  font-family: var(--font-mono);
+  margin: 0;
+}
+
+.plainText {
+  margin: 0;
+}
+
+.suggestedFixBlock {
+  margin: 0;
+  padding: var(--space-4);
+  background: var(--color-bg-subtle);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
