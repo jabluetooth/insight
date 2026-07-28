@@ -416,7 +416,18 @@
   margin-top: 4px;
 }
 
-/* ---- Error banner (data load failure) ---- */
+/* ---- Load-failure banners ----
+   Two distinct severities share this recipe on purpose (WCAG 1.4.1: never
+   the only differentiator is color) — each pairs a shape-distinct icon with
+   its own border/background hue:
+     .loadError   — red/circle-slash: the primary, load-bearing failure
+                    (the instance list itself couldn't load).
+     .loadNotice  — amber/triangle: a secondary, non-fatal failure (the
+                    stats summary above the instance list). Without this
+                    distinction the two banners render as visually
+                    identical red boxes when both queries fail at once
+                    (e.g. the same outage taking down both), which reads to
+                    a quick glance as "the same error twice." */
 
 .loadError {
   display: flex;
@@ -426,6 +437,23 @@
   border: 1px solid var(--color-danger-border);
   background: var(--color-danger-bg);
   color: var(--color-danger);
+}
+
+.loadNotice {
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-warning-border);
+  background: var(--color-warning-bg);
+  color: var(--color-warning);
+}
+
+.loadBannerIcon {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
 }
 
 .loadErrorTitle {

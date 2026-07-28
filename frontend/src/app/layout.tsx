@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Fraunces, Manrope, Geist_Mono } from "next/font/google";
 import Link from "next/link";
 import { auth, signOut } from "@/lib/auth";
+import { UserMenu } from "./UserMenu";
 import "./globals.css";
 import styles from "./layout.module.css";
 
@@ -47,11 +48,12 @@ export const viewport = {
 };
 
 // Root layout renders the single, app-wide glass header — including the
-// signed-in user's email and sign-out control when there's a session. This
-// used to be duplicated: dashboard/layout.tsx rendered its own second glass
-// topbar, which stacked visually on every /dashboard/* route. Consolidating
-// here means dashboard/layout.tsx goes back to being just the auth gate (see
-// the comment there) plus a content wrapper.
+// signed-in user's account menu (UserMenu: avatar trigger, name/email,
+// Settings link, sign-out) when there's a session. This used to be
+// duplicated: dashboard/layout.tsx rendered its own second glass topbar,
+// which stacked visually on every /dashboard/* route. Consolidating here
+// means dashboard/layout.tsx goes back to being just the auth gate (see the
+// comment there) plus a content wrapper.
 //
 // Calling auth() here makes every route render dynamically (it reads the
 // session cookie), same as dashboard/layout.tsx already did before this
@@ -89,21 +91,15 @@ export default async function RootLayout({
                 </Link>
               </nav>
               {session?.user && (
-                <div className={styles.userArea}>
-                  <span className={styles.userEmail}>
-                    {session.user.email ?? session.user.name}
-                  </span>
-                  <form
-                    action={async () => {
-                      "use server";
-                      await signOut({ redirectTo: "/" });
-                    }}
-                  >
-                    <button type="submit" className={styles.signOutButton}>
-                      Sign out
-                    </button>
-                  </form>
-                </div>
+                <UserMenu
+                  name={session.user.name ?? null}
+                  email={session.user.email ?? null}
+                  image={session.user.image ?? null}
+                  signOutAction={async () => {
+                    "use server";
+                    await signOut({ redirectTo: "/" });
+                  }}
+                />
               )}
             </div>
           </div>

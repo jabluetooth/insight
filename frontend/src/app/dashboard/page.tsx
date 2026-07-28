@@ -49,6 +49,47 @@ function formatShortDate(dateKey: string): string {
   });
 }
 
+/**
+ * Filled circle-slash — the primary/danger banner icon (instance list failed
+ * to load). Paired with a differently-shaped icon on the secondary/warning
+ * banner (see TriangleWarningIcon) so the two failure states are
+ * distinguishable by shape, not color alone (WCAG 1.4.1).
+ */
+function CircleErrorIcon() {
+  return (
+    <svg
+      className={styles.loadBannerIcon}
+      viewBox="0 0 20 20"
+      fill="none"
+      aria-hidden="true"
+    >
+      <circle cx="10" cy="10" r="8.5" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M6.5 6.5l7 7M13.5 6.5l-7 7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+/** Triangle-exclamation — the secondary/non-fatal (warning) banner icon. */
+function TriangleWarningIcon() {
+  return (
+    <svg
+      className={styles.loadBannerIcon}
+      viewBox="0 0 20 20"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M10 3.2l8 14.1H2l8-14.1z"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinejoin="round"
+      />
+      <path d="M10 8v4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+      <circle cx="10" cy="14.5" r="0.9" fill="currentColor" />
+    </svg>
+  );
+}
+
 function StatsSection({ stats }: { stats: DashboardStats }) {
   if (stats.totalDiagnoses === 0) {
     return (
@@ -171,9 +212,15 @@ export default async function DashboardPage() {
   return (
     <div>
       {statsError ? (
-        <div className={`${styles.loadError} ${styles.statsSectionMargin}`} role="alert">
+        // Non-fatal by design (see the try/catch above) — styled as a
+        // secondary "notice" (amber, triangle icon, polite live region)
+        // rather than the same red/circle/assertive treatment as the
+        // instance-list error below, so the two don't read as one
+        // duplicated banner when both queries fail at once.
+        <div className={`${styles.loadNotice} ${styles.statsSectionMargin}`} role="status">
+          <TriangleWarningIcon />
           <div>
-            <p className={styles.loadErrorTitle}>Couldn&apos;t load diagnosis activity</p>
+            <p className={styles.loadErrorTitle}>Diagnosis activity is temporarily unavailable</p>
             <p className={styles.loadErrorBody}>{statsError}</p>
           </div>
         </div>
@@ -197,6 +244,7 @@ export default async function DashboardPage() {
 
       {loadError && (
         <div className={styles.loadError} role="alert">
+          <CircleErrorIcon />
           <div>
             <p className={styles.loadErrorTitle}>Couldn&apos;t load your instances</p>
             <p className={styles.loadErrorBody}>{loadError}</p>
