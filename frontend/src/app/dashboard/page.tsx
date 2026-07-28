@@ -10,15 +10,6 @@ export const metadata: Metadata = {
   title: "My instances — Insight",
 };
 
-function formatRelativeOrDate(iso: string | null): string {
-  if (!iso) return "Never";
-  const date = new Date(iso);
-  return date.toLocaleString(undefined, {
-    dateStyle: "medium",
-    timeStyle: "short",
-  });
-}
-
 const TIER_LABELS: Record<ConfidenceTier, string> = {
   high: "high",
   moderate: "moderate",
@@ -285,9 +276,6 @@ export default async function DashboardPage() {
                     </span>
                   </div>
                   <p className={styles.instanceBaseUrl}>{instance.baseUrl}</p>
-                  <p className={styles.instanceMeta}>
-                    Last polled: {formatRelativeOrDate(instance.lastPolledAt)}
-                  </p>
                 </div>
                 <div className={styles.instanceActions}>
                   <div className={styles.errorCountBadge}>

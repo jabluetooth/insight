@@ -95,9 +95,8 @@ export default async function InstanceDetailPage({
         <div className={styles.emptyState}>
           <p className={styles.emptyStateTitle}>No diagnoses yet</p>
           <p className={styles.emptyStateBody}>
-            Once this instance reports a failed execution — via its Error
-            Trigger webhook or the next scheduled poll — the diagnosis will
-            show up here.
+            Once this instance reports a failed execution via its Error
+            Trigger webhook, the diagnosis will show up here.
           </p>
         </div>
       ) : (

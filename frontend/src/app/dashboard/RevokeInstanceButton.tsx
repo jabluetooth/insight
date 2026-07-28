@@ -19,7 +19,7 @@ export function RevokeInstanceButton({
   async function handleRevoke() {
     setError(null);
     const confirmed = window.confirm(
-      `Revoke "${label}"? Insight will stop polling it and its stored API key access is invalidated. This can't be undone from here.`
+      `Revoke "${label}"? Its stored API key access is invalidated immediately. This can't be undone from here.`
     );
     if (!confirmed) return;
 
