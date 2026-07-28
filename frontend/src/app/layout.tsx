@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Fraunces, Manrope, Geist_Mono } from "next/font/google";
 import Link from "next/link";
+import { auth, signOut } from "@/lib/auth";
 import "./globals.css";
 import styles from "./layout.module.css";
 
@@ -45,11 +46,24 @@ export const viewport = {
   colorScheme: "dark" as const,
 };
 
-export default function RootLayout({
+// Root layout renders the single, app-wide glass header — including the
+// signed-in user's email and sign-out control when there's a session. This
+// used to be duplicated: dashboard/layout.tsx rendered its own second glass
+// topbar, which stacked visually on every /dashboard/* route. Consolidating
+// here means dashboard/layout.tsx goes back to being just the auth gate (see
+// the comment there) plus a content wrapper.
+//
+// Calling auth() here makes every route render dynamically (it reads the
+// session cookie), same as dashboard/layout.tsx already did before this
+// change — acceptable given the JWT session strategy (no DB hit per the
+// comment in src/lib/auth.ts).
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth();
+
   return (
     <html
       lang="en"
@@ -65,14 +79,33 @@ export default function RootLayout({
             <Link href="/" className={styles.brand}>
               Insight
             </Link>
-            <nav aria-label="Main">
-              <Link href="/diagnose" className={styles.navLink}>
-                Diagnose a failure
-              </Link>
-              <Link href="/dashboard" className={styles.navLink}>
-                Dashboard
-              </Link>
-            </nav>
+            <div className={styles.headerRight}>
+              <nav aria-label="Main" className={styles.nav}>
+                <Link href="/diagnose" className={styles.navLink}>
+                  Diagnose a failure
+                </Link>
+                <Link href="/dashboard" className={styles.navLink}>
+                  Dashboard
+                </Link>
+              </nav>
+              {session?.user && (
+                <div className={styles.userArea}>
+                  <span className={styles.userEmail}>
+                    {session.user.email ?? session.user.name}
+                  </span>
+                  <form
+                    action={async () => {
+                      "use server";
+                      await signOut({ redirectTo: "/" });
+                    }}
+                  >
+                    <button type="submit" className={styles.signOutButton}>
+                      Sign out
+                    </button>
+                  </form>
+                </div>
+              )}
+            </div>
           </div>
         </header>
         <main id="main-content">{children}</main>

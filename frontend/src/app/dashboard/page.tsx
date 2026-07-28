@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { auth } from "@/lib/auth";
-import { getInstancesForUser } from "@/lib/dashboard-data";
+import { getDashboardStats, getInstancesForUser } from "@/lib/dashboard-data";
 import { RevokeInstanceButton } from "./RevokeInstanceButton";
 import styles from "./dashboard.module.css";
-import type { ConnectedInstance } from "@/lib/types";
+import type { ConfidenceTier, ConnectedInstance, DashboardStats } from "@/lib/types";
 
 export const metadata: Metadata = {
   title: "My instances — Insight",
@@ -17,6 +17,124 @@ function formatRelativeOrDate(iso: string | null): string {
     dateStyle: "medium",
     timeStyle: "short",
   });
+}
+
+const TIER_LABELS: Record<ConfidenceTier, string> = {
+  high: "high",
+  moderate: "moderate",
+  low: "low",
+  unknown: "unknown",
+};
+
+/** e.g. "3 high, 2 moderate, 1 unknown" — omits tiers with zero diagnoses. */
+function formatTierBreakdown(counts: Record<ConfidenceTier, number>): string {
+  const parts = (["high", "moderate", "low", "unknown"] as ConfidenceTier[])
+    .filter((tier) => counts[tier] > 0)
+    .map((tier) => `${counts[tier]} ${TIER_LABELS[tier]}`);
+  return parts.length > 0 ? parts.join(", ") : "No confidence data yet";
+}
+
+function formatDayLabel(dateKey: string): string {
+  return new Date(`${dateKey}T00:00:00Z`).toLocaleDateString(undefined, {
+    weekday: "short",
+    timeZone: "UTC",
+  });
+}
+
+function formatShortDate(dateKey: string): string {
+  return new Date(`${dateKey}T00:00:00Z`).toLocaleDateString(undefined, {
+    month: "short",
+    day: "numeric",
+    timeZone: "UTC",
+  });
+}
+
+function StatsSection({ stats }: { stats: DashboardStats }) {
+  if (stats.totalDiagnoses === 0) {
+    return (
+      <section className={styles.statsSection} aria-labelledby="stats-heading">
+        <h2 id="stats-heading" className={styles.statsHeading}>
+          Diagnosis activity
+        </h2>
+        <p className={styles.statsEmptyText}>
+          No diagnoses yet — once your connected instances report failures,
+          activity trends and root-cause breakdowns will show up here.
+        </p>
+      </section>
+    );
+  }
+
+  const maxDaily = Math.max(...stats.dailyCounts.map((d) => d.count), 0);
+  const sparklineSummary = stats.dailyCounts
+    .map((d) => `${formatShortDate(d.date)}: ${d.count}`)
+    .join(", ");
+
+  return (
+    <section className={styles.statsSection} aria-labelledby="stats-heading">
+      <h2 id="stats-heading" className={styles.statsHeading}>
+        Diagnosis activity
+      </h2>
+
+      <div className={styles.statsGrid}>
+        <div className={styles.statTile}>
+          <span className={styles.statTileValue}>{stats.totalDiagnoses}</span>
+          <span className={styles.statTileLabel}>Total diagnoses</span>
+        </div>
+        <div className={styles.statTile}>
+          <span className={styles.statTileValue}>
+            {stats.averageConfidence != null
+              ? `${Math.round(stats.averageConfidence * 100)}%`
+              : "—"}
+          </span>
+          <span className={styles.statTileLabel}>Average confidence</span>
+          <span className={styles.statTileSubtext}>
+            {formatTierBreakdown(stats.confidenceTierCounts)}
+          </span>
+        </div>
+      </div>
+
+      <div className={styles.statsColumns}>
+        <div className={styles.statsBlock}>
+          <h3 className={styles.statsBlockHeading}>Top root-cause categories</h3>
+          {stats.topCategories.length === 0 ? (
+            <p className={styles.statsEmptyText}>No categorized diagnoses yet.</p>
+          ) : (
+            <ul className={styles.categoryList}>
+              {stats.topCategories.map((c) => (
+                <li key={c.category} className={styles.categoryListItem}>
+                  <span className={styles.categoryListName}>{c.category}</span>
+                  <span className={styles.categoryListCount}>{c.count}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        <div className={styles.statsBlock}>
+          <h3 className={styles.statsBlockHeading}>Last 7 days</h3>
+          <div
+            className={styles.sparklineBars}
+            role="img"
+            aria-label={`Diagnoses per day, last 7 days: ${sparklineSummary}`}
+          >
+            {stats.dailyCounts.map((d) => (
+              <div key={d.date} className={styles.sparklineBarWrap} title={`${formatShortDate(d.date)}: ${d.count}`}>
+                <div
+                  className={styles.sparklineBar}
+                  style={{ height: maxDaily > 0 ? `${Math.round((d.count / maxDaily) * 100)}%` : "0%" }}
+                />
+              </div>
+            ))}
+          </div>
+          <div className={styles.sparklineLabels} aria-hidden="true">
+            {stats.dailyCounts.map((d) => (
+              <span key={d.date}>{formatDayLabel(d.date)}</span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 }
 
 export default async function DashboardPage() {
@@ -38,8 +156,31 @@ export default async function DashboardPage() {
         : "Could not load your connected instances.";
   }
 
+  // Stats failures are non-fatal — the instance list above is the more
+  // load-bearing part of this page, so a broken stats query shouldn't take
+  // the whole dashboard down with it.
+  let stats: DashboardStats | null = null;
+  let statsError: string | null = null;
+  try {
+    stats = await getDashboardStats(ownerUserId);
+  } catch (err) {
+    statsError =
+      err instanceof Error ? err.message : "Could not load your diagnosis stats.";
+  }
+
   return (
     <div>
+      {statsError ? (
+        <div className={`${styles.loadError} ${styles.statsSectionMargin}`} role="alert">
+          <div>
+            <p className={styles.loadErrorTitle}>Couldn&apos;t load diagnosis activity</p>
+            <p className={styles.loadErrorBody}>{statsError}</p>
+          </div>
+        </div>
+      ) : (
+        stats && <StatsSection stats={stats} />
+      )}
+
       <div className={styles.pageHeader}>
         <div>
           <h1 className={styles.pageHeading}>My instances</h1>

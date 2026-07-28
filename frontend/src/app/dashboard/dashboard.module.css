@@ -2,81 +2,176 @@
   min-height: 100%;
 }
 
-.topBar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: var(--space-3);
-  padding: var(--space-3) var(--space-5);
-  margin: var(--space-3) var(--space-4) 0;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-lg);
-  background: rgba(9, 14, 16, 0.55);
-  backdrop-filter: blur(22px) saturate(1.4);
-  -webkit-backdrop-filter: blur(22px) saturate(1.4);
-  box-shadow: var(--shadow-pop);
-  position: sticky;
-  top: var(--space-3);
-  z-index: 20;
-}
-
-@supports not (backdrop-filter: blur(1px)) {
-  .topBar {
-    background: rgba(9, 14, 16, 0.94);
-  }
-}
-
-.topBarNav {
-  display: flex;
-  gap: var(--space-4);
-}
-
-.topBarLink {
-  font-weight: 700;
-  font-family: var(--font-sans);
-  color: var(--color-text);
-  text-decoration: none;
-}
-
-.topBarLink:hover {
-  color: var(--color-primary);
-}
-
-.topBarUser {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-}
-
-.userEmail {
-  font-size: 0.85rem;
-  color: var(--color-text-muted);
-  font-family: var(--font-mono);
-}
-
-.signOutButton {
-  min-height: 36px;
-  padding: var(--space-1) var(--space-3);
-  border: 1px solid var(--line-2);
-  border-radius: var(--radius-pill);
-  background: rgba(255, 255, 255, 0.04);
-  color: var(--color-text);
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: border-color 0.12s ease, color 0.12s ease;
-}
-
-.signOutButton:hover {
-  border-color: var(--color-danger-border);
-  color: var(--color-danger);
-}
-
 .content {
   max-width: var(--max-width);
   margin: 0 auto;
   padding: var(--space-6) var(--space-5) var(--space-8);
+}
+
+/* ---- Aggregate stats (FR-16) — same card surface/shadow/border treatment
+   as .instanceCard / .diagnosisCard below, so this reads as one visual
+   system rather than a new component. ---- */
+
+.statsSection {
+  margin-bottom: var(--space-6);
+  padding: var(--space-5);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-raised);
+  box-shadow: var(--shadow-card);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+  .statsSection {
+    background: var(--color-bg-raised-solid);
+  }
+}
+
+.statsSectionMargin {
+  margin-bottom: var(--space-6);
+}
+
+.statsHeading {
+  font-size: 1.15rem;
+  font-weight: 400;
+  margin: 0 0 var(--space-4) 0;
+}
+
+.statsEmptyText {
+  color: var(--color-text-muted);
+  font-family: var(--font-sans);
+  margin: 0;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.statTile {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.statTileValue {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 1.8rem;
+  color: var(--ink);
+  line-height: 1.1;
+}
+
+.statTileLabel {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--color-text-muted);
+}
+
+.statTileSubtext {
+  font-size: 0.8rem;
+  color: var(--ink-2);
+  font-family: var(--font-sans);
+  margin-top: 2px;
+}
+
+.statsColumns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-5);
+}
+
+.statsBlockHeading {
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--color-text-muted);
+  margin: 0 0 var(--space-3) 0;
+}
+
+.categoryList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.categoryListItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.categoryListName {
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  color: var(--color-text);
+}
+
+.categoryListCount {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+/* Sparkline: a single-series, sequential-hue bar chart (dataviz skill
+   guidance) — one color, no legend needed. Bars are capped at 24px, get a
+   4px rounded data-end, sit square on the baseline, with a 2px surface gap
+   between adjacent bars. */
+.sparklineBars {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 72px;
+}
+
+.sparklineBarWrap {
+  flex: 1 1 0;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.sparklineBar {
+  width: 100%;
+  max-width: 24px;
+  min-height: 3px;
+  border-radius: 4px 4px 0 0;
+  background: linear-gradient(180deg, var(--color-primary), var(--color-primary-dark));
+  box-shadow: 0 0 10px rgba(34, 211, 238, 0.25);
+}
+
+.sparklineLabels {
+  display: flex;
+  gap: 2px;
+  margin-top: var(--space-1);
+}
+
+.sparklineLabels span {
+  flex: 1 1 0;
+  text-align: center;
+  font-size: 0.65rem;
+  color: var(--ink-3);
+  font-family: var(--font-mono);
 }
 
 /* ---- Instance list ---- */

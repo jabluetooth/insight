@@ -74,6 +74,21 @@
   color: var(--color-primary);
 }
 
+/* Wraps nav + the signed-in user area so headerInner's space-between still
+   only has two flex children (brand, headerRight) regardless of whether a
+   session is present. */
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+}
+
 .navLink {
   font-weight: 600;
   font-size: 0.9rem;
@@ -86,6 +101,43 @@
 .navLink:hover {
   background: rgba(255, 255, 255, 0.06);
   color: var(--ink);
+}
+
+/* Signed-in user area — moved from dashboard/dashboard.module.css's old
+   .topBar so there's exactly one glass header, not two stacked on
+   /dashboard/* routes. */
+.userArea {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.userEmail {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.signOutButton {
+  min-height: 36px;
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--color-text);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.12s ease, color 0.12s ease;
+}
+
+.signOutButton:hover {
+  border-color: var(--color-danger-border);
+  color: var(--color-danger);
 }
 
 .footer {
@@ -107,14 +159,21 @@
     row-gap: var(--space-2);
   }
 
-  .headerInner > nav {
-    display: flex;
-    gap: var(--space-1);
+  .headerRight {
     width: 100%;
+    justify-content: space-between;
+  }
+
+  .nav {
+    gap: var(--space-1);
   }
 
   .navLink {
     padding: var(--space-1) var(--space-2);
     font-size: 0.85rem;
+  }
+
+  .userEmail {
+    max-width: 120px;
   }
 }

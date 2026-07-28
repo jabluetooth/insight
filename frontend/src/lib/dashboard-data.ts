@@ -1,6 +1,13 @@
 import "server-only";
 import { getDashboardDb } from "./db";
-import type { ConnectedInstance, DiagnosisLogRow } from "./types";
+import { getConfidenceTier } from "./types";
+import type { ConfidenceTier, ConnectedInstance, DashboardStats, DiagnosisLogRow } from "./types";
+
+/** Trailing window size for the dashboard's daily-count trend (FR-16). */
+const TREND_WINDOW_DAYS = 7;
+
+/** Top-N cap for the root-cause category breakdown (FR-16). */
+const TOP_CATEGORY_LIMIT = 5;
 
 // Read-only queries backing the /dashboard pages (PRD §6.9 item 2: the
 // dashboard reads Postgres directly for display; the one write path,
@@ -125,6 +132,109 @@ export async function getDiagnosesForInstance(
     suggestedFix: row.suggested_fix ?? null,
     source: row.source ?? null,
   }));
+}
+
+/**
+ * Aggregate stats across every instance this user owns (FR-16) — total
+ * diagnoses, average confidence + tier breakdown, top root-cause
+ * categories, and a zero-filled daily count for the trailing window. Scoped
+ * by owner_user_id via the same connected_instances join every other query
+ * in this file uses, so one user's stats never include another's rows.
+ *
+ * Confidence-tier bucketing intentionally happens in JS via
+ * getConfidenceTier, not as SQL thresholds, so this never drifts from the
+ * single definition of "high/moderate/low" used everywhere else.
+ */
+export async function getDashboardStats(ownerUserId: string): Promise<DashboardStats> {
+  const db = getDashboardDb();
+
+  const [confidenceResult, categoryResult, dailyResult] = await Promise.all([
+    db.query(
+      `
+      SELECT d.confidence
+      FROM diagnoses d
+      JOIN connected_instances ci ON ci.id = d.instance_id
+      WHERE ci.owner_user_id = $1
+      `,
+      [ownerUserId]
+    ),
+    db.query(
+      `
+      SELECT
+        COALESCE(NULLIF(d.root_cause_category, ''), 'Uncategorized') AS category,
+        COUNT(*)::int AS count
+      FROM diagnoses d
+      JOIN connected_instances ci ON ci.id = d.instance_id
+      WHERE ci.owner_user_id = $1
+      GROUP BY category
+      ORDER BY count DESC, category ASC
+      LIMIT $2
+      `,
+      [ownerUserId, TOP_CATEGORY_LIMIT]
+    ),
+    db.query(
+      `
+      SELECT date_trunc('day', d.created_at)::date AS day, COUNT(*)::int AS count
+      FROM diagnoses d
+      JOIN connected_instances ci ON ci.id = d.instance_id
+      WHERE ci.owner_user_id = $1
+        AND d.created_at >= NOW() - make_interval(days => $2::int)
+      GROUP BY day
+      ORDER BY day ASC
+      `,
+      [ownerUserId, TREND_WINDOW_DAYS]
+    ),
+  ]);
+
+  const tierCounts: Record<ConfidenceTier, number> = {
+    high: 0,
+    moderate: 0,
+    low: 0,
+    unknown: 0,
+  };
+  let confidenceSum = 0;
+  let confidenceCount = 0;
+  for (const row of confidenceResult.rows as { confidence: string | number | null }[]) {
+    const confidence = row.confidence == null ? null : Number(row.confidence);
+    tierCounts[getConfidenceTier(confidence)] += 1;
+    if (confidence != null && !Number.isNaN(confidence)) {
+      confidenceSum += confidence;
+      confidenceCount += 1;
+    }
+  }
+  const totalDiagnoses = confidenceResult.rows.length;
+  const averageConfidence = confidenceCount > 0 ? confidenceSum / confidenceCount : null;
+
+  const topCategories = (categoryResult.rows as { category: string; count: string | number }[]).map(
+    (row) => ({ category: row.category, count: Number(row.count) })
+  );
+
+  const countsByDate = new Map<string, number>();
+  for (const row of dailyResult.rows as { day: string | Date; count: string | number }[]) {
+    countsByDate.set(toDateKey(new Date(row.day)), Number(row.count));
+  }
+
+  const today = new Date();
+  const dailyCounts: { date: string; count: number }[] = [];
+  for (let daysAgo = TREND_WINDOW_DAYS - 1; daysAgo >= 0; daysAgo--) {
+    const day = new Date(
+      Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate() - daysAgo)
+    );
+    const dateKey = toDateKey(day);
+    dailyCounts.push({ date: dateKey, count: countsByDate.get(dateKey) ?? 0 });
+  }
+
+  return {
+    totalDiagnoses,
+    averageConfidence,
+    confidenceTierCounts: tierCounts,
+    topCategories,
+    dailyCounts,
+  };
+}
+
+function toDateKey(date: Date): string {
+  return date.toISOString().slice(0, 10);
 }
 
 interface ConnectedInstanceRow {

@@ -101,6 +101,24 @@ export interface DiagnosisLogRow {
   source: string | null;
 }
 
+/**
+ * Aggregate stats across ALL of a signed-in user's connected instances
+ * (FR-16) — as opposed to DiagnosisLogRow, which is scoped to one instance.
+ * See getDashboardStats in src/lib/dashboard-data.ts.
+ */
+export interface DashboardStats {
+  /** Count of every diagnosis row across every instance this user owns. */
+  totalDiagnoses: number;
+  /** Mean of non-null confidence values, 0-1. Null if no diagnosis has a known confidence. */
+  averageConfidence: number | null;
+  /** Every diagnosis bucketed by getConfidenceTier (including "unknown" for null/NaN confidence) — same thresholds used everywhere else, not reinvented here. */
+  confidenceTierCounts: Record<ConfidenceTier, number>;
+  /** Root-cause categories ranked by frequency, most common first (capped to a top handful). Diagnoses with no category roll up under "Uncategorized". */
+  topCategories: { category: string; count: number }[];
+  /** One entry per day for the trailing window, oldest first, zero-filled for days with no diagnoses (ISO yyyy-mm-dd dates). */
+  dailyCounts: { date: string; count: number }[];
+}
+
 /** POST body this frontend sends to /api/instances/connect. `ownerUserId` is NOT part of this — the route sets it server-side from the session. */
 export interface ConnectInstanceRequestBody {
   label: string;
