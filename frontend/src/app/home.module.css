@@ -1,31 +1,67 @@
 .hero {
-  padding: var(--space-8) var(--space-5) var(--space-7);
+  padding: var(--space-7) var(--space-5) var(--space-8);
+  position: relative;
 }
 
 .heroInner {
   max-width: var(--max-width);
   margin: 0 auto;
+  position: relative;
+  padding: var(--space-7) var(--space-6);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--line);
+  background: var(--color-bg-raised);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+  .heroInner {
+    background: var(--color-bg-raised-solid);
+  }
+}
+
+/* Soft cyan/teal glow sitting behind the copy — a quiet echo of the aurora,
+   contained inside the card rather than a full side-panel orb (the content
+   here is a single narrow column, not a wide dashboard split). */
+.heroInner::before {
+  content: "";
+  position: absolute;
+  inset: -30% -10% auto auto;
+  width: 60%;
+  aspect-ratio: 1;
+  background: radial-gradient(circle, rgba(34, 211, 238, 0.35), transparent 70%);
+  filter: blur(10px);
+  z-index: -1;
+  pointer-events: none;
 }
 
 .eyebrow {
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  font-size: 0.78rem;
   font-weight: 700;
+  font-family: var(--font-sans);
   color: var(--color-primary);
   margin: 0 0 var(--space-3) 0;
 }
 
 .hero h1 {
-  font-size: clamp(1.9rem, 4vw, 2.75rem);
+  font-size: clamp(2.1rem, 5vw, 3.1rem);
+  font-weight: 400;
+  line-height: 1.08;
   margin: 0 0 var(--space-4) 0;
   max-width: 20ch;
 }
 
 .lead {
-  font-size: 1.125rem;
+  font-size: 1.1rem;
+  font-family: var(--font-sans);
   color: var(--color-text-muted);
-  max-width: 60ch;
+  max-width: 58ch;
   margin: 0 0 var(--space-6) 0;
 }
 
@@ -37,36 +73,48 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  background: var(--color-primary);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
   color: var(--color-primary-contrast);
-  font-weight: 600;
+  font-weight: 700;
   text-decoration: none;
   padding: var(--space-3) var(--space-5);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-pill);
   font-size: 1rem;
   min-height: 44px;
+  box-shadow: var(--shadow-glow-primary);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
 
 .primaryCta:hover {
-  background: var(--color-primary-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 14px 30px rgba(34, 211, 238, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 
 .factList {
   display: grid;
-  gap: var(--space-5);
+  gap: var(--space-4);
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   margin: 0;
   padding-top: var(--space-6);
-  border-top: 1px solid var(--color-border);
+  border-top: 1px dashed var(--line-2);
+}
+
+.factList > div {
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .factList dt {
-  font-weight: 600;
-  margin-bottom: var(--space-1);
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin: 0 0 var(--space-1) 0;
+  color: var(--ink);
 }
 
 .factList dd {
   margin: 0;
   color: var(--color-text-muted);
-  font-size: 0.95rem;
+  font-size: 0.9rem;
 }

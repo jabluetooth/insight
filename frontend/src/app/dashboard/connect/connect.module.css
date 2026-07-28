@@ -4,22 +4,32 @@
 }
 
 .intro h1 {
-  font-size: clamp(1.4rem, 3vw, 1.8rem);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 400;
   margin: 0 0 var(--space-3) 0;
 }
 
 .intro p {
   color: var(--color-text-muted);
+  font-family: var(--font-sans);
   max-width: 62ch;
 }
 
 .form {
   margin-top: var(--space-6);
   background: var(--color-bg-raised);
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--line);
   border-radius: var(--radius-lg);
   padding: var(--space-6);
   box-shadow: var(--shadow-card);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+  .form {
+    background: var(--color-bg-raised-solid);
+  }
 }
 
 .field {
@@ -31,6 +41,7 @@
   font-weight: 600;
   margin-bottom: var(--space-2);
   font-size: 0.925rem;
+  font-family: var(--font-sans);
 }
 
 .hint {
@@ -44,17 +55,27 @@
   width: 100%;
   min-height: 44px;
   padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  background: var(--color-bg);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.03);
   color: var(--color-text);
   font-size: 1rem;
   font-family: inherit;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.input::placeholder {
+  color: var(--ink-3);
+}
+
+.input:hover {
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .input:focus-visible {
   outline: 3px solid var(--color-primary);
   outline-offset: 1px;
+  border-color: var(--color-primary);
 }
 
 .input[aria-invalid="true"] {
@@ -65,7 +86,7 @@
   color: var(--color-danger);
   font-size: 0.85rem;
   margin-top: var(--space-1);
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .submitRow {
@@ -79,28 +100,32 @@
   min-height: 44px;
   padding: var(--space-3) var(--space-6);
   border: 0;
-  border-radius: var(--radius-md);
-  background: var(--color-primary);
+  border-radius: var(--radius-pill);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
   color: var(--color-primary-contrast);
-  font-weight: 600;
+  font-weight: 700;
   font-size: 1rem;
   cursor: pointer;
+  box-shadow: var(--shadow-glow-primary);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
 
 .submitButton:hover:not(:disabled) {
-  background: var(--color-primary-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 14px 30px rgba(34, 211, 238, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 
 .submitButton:disabled {
-  opacity: 0.65;
+  opacity: 0.6;
   cursor: not-allowed;
+  transform: none;
 }
 
 .spinner {
   display: inline-block;
   width: 16px;
   height: 16px;
-  border: 2px solid rgba(255, 255, 255, 0.4);
+  border: 2px solid rgba(4, 20, 26, 0.35);
   border-top-color: currentColor;
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
@@ -124,7 +149,7 @@
   align-items: flex-start;
   padding: var(--space-4);
   border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--line);
 }
 
 .bannerError {
@@ -142,6 +167,7 @@
 }
 
 .bannerTitle {
+  font-family: var(--font-sans);
   font-weight: 700;
   margin: 0 0 var(--space-1) 0;
   color: var(--color-text);
@@ -162,25 +188,27 @@
 .tokenValue {
   flex: 1;
   padding: var(--space-2) var(--space-3);
-  background: var(--color-bg-subtle);
-  border: 1px solid var(--color-border);
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--line-2);
   border-radius: var(--radius-sm);
   font-family: var(--font-mono);
   font-size: 0.85rem;
+  color: var(--color-primary);
   word-break: break-all;
 }
 
 .copyButton {
   min-height: 40px;
   padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  background: var(--color-bg-raised);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.04);
   color: var(--color-text);
   font-weight: 600;
   font-size: 0.85rem;
   cursor: pointer;
   white-space: nowrap;
+  transition: border-color 0.12s ease, color 0.12s ease;
 }
 
 .copyButton:hover {

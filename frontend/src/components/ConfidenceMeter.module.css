@@ -6,23 +6,32 @@
 
 .confidenceHeader {
   display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  margin-bottom: var(--space-2);
+  align-items: baseline;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
 }
 
+/* The confidence number is the one figure a user scans for first — given
+ * the display serif treatment (per PRD calibration intent, it still sits
+ * right next to the tier badge so a low number can't be mistaken for a
+ * neutral stat). */
 .confidencePercent {
-  font-family: var(--font-mono);
-  font-weight: 600;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.9rem;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--ink);
 }
 
 .confidenceTierBadge {
-  font-size: 0.75rem;
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
-  padding: var(--space-1) var(--space-2);
-  border-radius: var(--radius-sm);
+  letter-spacing: 0.04em;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
 }
 
 .tierHigh {
@@ -46,7 +55,7 @@
 .tierUnknown {
   background: var(--color-bg-subtle);
   color: var(--color-text-muted);
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--line);
 }
 
 /* Custom confidence bar: a plain <meter> is unreliable here — Chromium
@@ -57,28 +66,31 @@
 .confidenceMeterTrack {
   width: 100%;
   height: 10px;
-  border-radius: 999px;
-  background: var(--color-bg-subtle);
-  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--line);
   overflow: hidden;
 }
 
 .confidenceMeterFill {
   height: 100%;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   transition: width 0.2s ease;
 }
 
 .fillHigh {
   background: var(--color-success);
+  box-shadow: 0 0 12px rgba(74, 222, 128, 0.5);
 }
 
 .fillModerate {
   background: var(--color-warning);
+  box-shadow: 0 0 12px rgba(251, 191, 36, 0.5);
 }
 
 .fillLow {
   background: var(--color-danger);
+  box-shadow: 0 0 12px rgba(248, 113, 113, 0.5);
 }
 
 .fillUnknown {

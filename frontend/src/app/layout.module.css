@@ -6,27 +6,41 @@
   background: var(--color-primary);
   color: var(--color-primary-contrast);
   padding: var(--space-2) var(--space-4);
-  border-radius: var(--radius-sm);
-  font-weight: 600;
+  border-radius: var(--radius-pill);
+  font-weight: 700;
   transition: top 0.15s ease;
+  box-shadow: var(--shadow-glow-primary);
 }
 
 .skipLink:focus {
   top: var(--space-3);
 }
 
+/* Frosted, floating topbar — sticky with a margin so it reads as a panel
+   over the aurora rather than an edge-to-edge bar. */
 .header {
-  border-bottom: 1px solid var(--color-border);
-  background: var(--color-bg);
+  margin: var(--space-3) var(--space-4) 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: rgba(9, 14, 16, 0.55);
+  backdrop-filter: blur(22px) saturate(1.4);
+  -webkit-backdrop-filter: blur(22px) saturate(1.4);
+  box-shadow: var(--shadow-pop);
   position: sticky;
-  top: 0;
-  z-index: 10;
+  top: var(--space-3);
+  z-index: 20;
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+  .header {
+    background: rgba(9, 14, 16, 0.94);
+  }
 }
 
 .headerInner {
   max-width: var(--max-width);
   margin: 0 auto;
-  padding: var(--space-4) var(--space-5);
+  padding: var(--space-3) var(--space-5);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -34,11 +48,26 @@
 }
 
 .brand {
-  font-weight: 700;
-  font-size: 1.25rem;
-  color: var(--color-text);
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-style: italic;
+  font-size: 1.4rem;
+  color: var(--ink);
   text-decoration: none;
   letter-spacing: -0.01em;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.brand::before {
+  content: "";
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary), #2dd4bf);
+  box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.18);
+  flex-shrink: 0;
 }
 
 .brand:hover {
@@ -47,21 +76,21 @@
 
 .navLink {
   font-weight: 600;
-  font-size: 0.95rem;
-  color: var(--color-text);
+  font-size: 0.9rem;
+  color: var(--ink-2);
   text-decoration: none;
   padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-pill);
 }
 
 .navLink:hover {
-  background: var(--color-bg-subtle);
-  color: var(--color-primary);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--ink);
 }
 
 .footer {
   margin-top: auto;
-  border-top: 1px solid var(--color-border);
+  border-top: 1px solid var(--line);
   padding: var(--space-6) var(--space-5);
 }
 
@@ -70,4 +99,22 @@
   margin: 0 auto;
   color: var(--color-text-muted);
   font-size: 0.875rem;
+}
+
+@media (max-width: 480px) {
+  .headerInner {
+    flex-wrap: wrap;
+    row-gap: var(--space-2);
+  }
+
+  .headerInner > nav {
+    display: flex;
+    gap: var(--space-1);
+    width: 100%;
+  }
+
+  .navLink {
+    padding: var(--space-1) var(--space-2);
+    font-size: 0.85rem;
+  }
 }
