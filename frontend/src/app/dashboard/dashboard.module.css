@@ -245,6 +245,10 @@
   gap: var(--space-4);
 }
 
+.addInstanceRow {
+  margin-top: var(--space-5);
+}
+
 .instanceCard {
   display: flex;
   flex-wrap: wrap;

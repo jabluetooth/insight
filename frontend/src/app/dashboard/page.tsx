@@ -237,9 +237,6 @@ export default async function DashboardPage() {
             fixes.
           </p>
         </div>
-        <Link href="/dashboard/connect" className={styles.primaryLink}>
-          + Add instance
-        </Link>
       </div>
 
       {loadError && (
@@ -267,42 +264,49 @@ export default async function DashboardPage() {
       )}
 
       {!loadError && instances.length > 0 && (
-        <div className={styles.instanceGrid}>
-          {instances.map((instance) => (
-            <div key={instance.id} className={styles.instanceCard}>
-              <div className={styles.instanceMain}>
-                <div className={styles.instanceLabelRow}>
-                  <Link
-                    href={`/dashboard/instances/${instance.id}`}
-                    className={styles.instanceLabelLink}
-                  >
-                    {instance.label}
-                  </Link>
-                  <span
-                    className={`${styles.statusBadge} ${
-                      instance.status === "active" ? styles.statusActive : styles.statusRevoked
-                    }`}
-                  >
-                    {instance.status}
-                  </span>
+        <>
+          <div className={styles.instanceGrid}>
+            {instances.map((instance) => (
+              <div key={instance.id} className={styles.instanceCard}>
+                <div className={styles.instanceMain}>
+                  <div className={styles.instanceLabelRow}>
+                    <Link
+                      href={`/dashboard/instances/${instance.id}`}
+                      className={styles.instanceLabelLink}
+                    >
+                      {instance.label}
+                    </Link>
+                    <span
+                      className={`${styles.statusBadge} ${
+                        instance.status === "active" ? styles.statusActive : styles.statusRevoked
+                      }`}
+                    >
+                      {instance.status}
+                    </span>
+                  </div>
+                  <p className={styles.instanceBaseUrl}>{instance.baseUrl}</p>
+                  <p className={styles.instanceMeta}>
+                    Last polled: {formatRelativeOrDate(instance.lastPolledAt)}
+                  </p>
                 </div>
-                <p className={styles.instanceBaseUrl}>{instance.baseUrl}</p>
-                <p className={styles.instanceMeta}>
-                  Last polled: {formatRelativeOrDate(instance.lastPolledAt)}
-                </p>
-              </div>
-              <div className={styles.instanceActions}>
-                <div className={styles.errorCountBadge}>
-                  <span className={styles.errorCountNumber}>{instance.diagnosisCount}</span>
-                  <span className={styles.errorCountLabel}>diagnoses</span>
+                <div className={styles.instanceActions}>
+                  <div className={styles.errorCountBadge}>
+                    <span className={styles.errorCountNumber}>{instance.diagnosisCount}</span>
+                    <span className={styles.errorCountLabel}>diagnoses</span>
+                  </div>
+                  {instance.status === "active" && (
+                    <RevokeInstanceButton instanceId={instance.id} label={instance.label} />
+                  )}
                 </div>
-                {instance.status === "active" && (
-                  <RevokeInstanceButton instanceId={instance.id} label={instance.label} />
-                )}
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+          <div className={styles.addInstanceRow}>
+            <Link href="/dashboard/connect" className={styles.primaryLink}>
+              + Add instance
+            </Link>
+          </div>
+        </>
       )}
     </div>
   );
