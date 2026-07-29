@@ -1,0 +1,44 @@
+{
+  "name": "Insight - Test Failure (Intentional)",
+  "nodes": [
+    {
+      "id": "b2c3d4e5-0002-4000-8000-000000000001",
+      "name": "Run Manually",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "parameters": {}
+    },
+    {
+      "id": "b2c3d4e5-0002-4000-8000-000000000002",
+      "name": "Throw Intentional Error",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [520, 300],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "throw new Error(\"Insight test failure — intentional error to verify the diagnosis pipeline end to end. Safe to ignore outside of testing.\");"
+      }
+    }
+  ],
+  "connections": {
+    "Run Manually": {
+      "main": [
+        [
+          {
+            "node": "Throw Intentional Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "templateNote": "Deliberately-failing test workflow — see workflows/README.md for setup instructions. Its Error Workflow setting must be pointed at 'Insight - Error Workflow Template' after both are imported (workflow IDs aren't known until import, so this can't be pre-wired in the file)."
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "name": "Insight - Error Workflow Template",
+  "nodes": [
+    {
+      "id": "a1b2c3d4-0001-4000-8000-000000000001",
+      "name": "On Workflow Error",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "parameters": {}
+    },
+    {
+      "id": "a1b2c3d4-0001-4000-8000-000000000002",
+      "name": "Push Failure To Insight",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [520, 300],
+      "parameters": {
+        "method": "POST",
+        "url": "https://n8n.filheinzrelatorre.com/webhook/insight/ingest",
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ {\n  \"executionId\": $json.execution.id,\n  \"errorMessage\": $json.execution.error.message,\n  \"lastNodeExecuted\": $json.execution.lastNodeExecuted,\n  \"ingestToken\": \"REPLACE_WITH_YOUR_INGEST_TOKEN\"\n} }}",
+        "options": {}
+      }
+    }
+  ],
+  "connections": {
+    "On Workflow Error": {
+      "main": [
+        [
+          {
+            "node": "Push Failure To Insight",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "templateNote": "Insight error-workflow template — see workflows/README.md for setup instructions."
+  }
+}
