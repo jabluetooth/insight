@@ -15,6 +15,18 @@ type Phase = "idle" | "loading" | "success" | "error";
 
 const MAX_UPLOAD_BYTES = 5 * 1024 * 1024; // 5MB — generous for a single execution export
 
+/** Cycled while phase === "loading" — mirrors the real pipeline order (fetch
+ * → redact → retrieve → diagnose) so the wait reads as progress, not a stall.
+ * Purely cosmetic: the UI has no actual visibility into which step the
+ * backend is on, so this loops on a timer rather than tracking real state. */
+const LOADING_STEPS = [
+  "Fetching execution details…",
+  "Redacting secrets…",
+  "Searching for similar failure patterns…",
+  "Generating diagnosis…",
+];
+const LOADING_STEP_INTERVAL_MS = 2200;
+
 interface FieldErrors {
   executionId?: string;
   baseUrl?: string;
@@ -47,6 +59,8 @@ export function DiagnoseForm() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [errorDetail, setErrorDetail] = useState<string | null>(null);
 
+  const [loadingStepIndex, setLoadingStepIndex] = useState(0);
+
   const resultRef = useRef<HTMLDivElement>(null);
   const statusRef = useRef<HTMLDivElement>(null);
 
@@ -56,6 +70,14 @@ export function DiagnoseForm() {
     } else if (phase === "error" && statusRef.current) {
       statusRef.current.focus();
     }
+  }, [phase]);
+
+  useEffect(() => {
+    if (phase !== "loading") return;
+    const id = setInterval(() => {
+      setLoadingStepIndex((i) => (i + 1) % LOADING_STEPS.length);
+    }, LOADING_STEP_INTERVAL_MS);
+    return () => clearInterval(id);
   }, [phase]);
 
   function resetOutcome() {
@@ -132,6 +154,7 @@ export function DiagnoseForm() {
     if (!validate()) return;
 
     setPhase("loading");
+    setLoadingStepIndex(0);
 
     const body: DiagnoseRequestBody =
       mode === "execution"
@@ -337,13 +360,17 @@ export function DiagnoseForm() {
       <div className={styles.statusRegion} aria-live="polite">
         {phase === "loading" && (
           <div className={styles.bannerLoading} ref={statusRef} tabIndex={-1}>
-            <span className={styles.spinner} aria-hidden="true" />
+            <span className={styles.pulseLoader} aria-hidden="true">
+              <span className={styles.pulseRing} />
+              <span className={styles.pulseRing} />
+              <span className={styles.pulseCore} />
+            </span>
             <div>
               <p className={styles.bannerTitle}>Diagnosing…</p>
-              <p className={styles.bannerBody}>
-                Insight is retrieving the execution and generating a
-                diagnosis. This is usually well under 20 seconds.
+              <p className={styles.bannerBody} aria-live="off">
+                {LOADING_STEPS[loadingStepIndex]}
               </p>
+              <p className={styles.bannerSubtext}>Usually well under 20 seconds.</p>
             </div>
           </div>
         )}
