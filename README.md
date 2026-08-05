@@ -57,3 +57,9 @@ To get diagnoses on your own workflow failures rather than just the public paste
 3. Import [`workflows/insight-test-failure.json`](workflows/insight-test-failure.json) to trigger a failure on demand and confirm the wiring end-to-end.
 
 Full walkthrough: [`workflows/README.md`](workflows/README.md).
+
+## Changelog
+
+- **2026-07-29** — Added retry handling (3 tries, backoff) to the execution-fetch, API-key-validation, and Postgres write steps in the n8n backend, none of which previously had any resilience against transient failures.
+- **2026-07-29** — Replaced plaintext storage of the per-instance ingest token and connected n8n API key with real cryptography: the ingest token is now SHA-256 hashed before storage/comparison, and the API key is AES-256-GCM encrypted at rest and only decrypted in-memory when it's actually needed to call the customer's instance. **Operational follow-up:** this requires an `INSIGHT_ENCRYPTION_KEY` environment variable set on the n8n instance; existing rows should be re-hashed/re-encrypted once it's set, since the encryption step will otherwise throw.
+- **2026-07-29** — Cleanly isolated the disabled knowledge-base retrieval scaffold (Qdrant search, reranker, embedding nodes) so it's a fully disconnected island with no live path in or out, instead of sitting silently upstream of an enabled node. Fixed a placeholder value left in the (disabled) reranker's URL and a malformed (disabled) Qdrant search URL, and clarified the workflow's own documentation that this is scaffolding for future RAG integration, not an active feature — see "Current status" above.
