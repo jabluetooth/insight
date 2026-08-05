@@ -60,13 +60,8 @@
   gap: var(--space-2);
 }
 
-.brand::before {
-  content: "";
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--color-primary), #2dd4bf);
-  box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.18);
+.brandLogo {
+  border-radius: 22%;
   flex-shrink: 0;
 }
 
