@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Fraunces, Manrope, Geist_Mono } from "next/font/google";
-import Image from "next/image";
 import Link from "next/link";
 import { auth, signOut } from "@/lib/auth";
 import { UserMenu } from "./UserMenu";
@@ -80,14 +79,6 @@ export default async function RootLayout({
         <header className={styles.header}>
           <div className={styles.headerInner}>
             <Link href="/" className={styles.brand}>
-              <Image
-                src="/logo.png"
-                alt=""
-                width={24}
-                height={24}
-                className={styles.brandLogo}
-                priority
-              />
               Insight
             </Link>
             <div className={styles.headerRight}>

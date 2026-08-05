@@ -60,10 +60,6 @@
   gap: var(--space-2);
 }
 
-.brandLogo {
-  border-radius: 22%;
-  flex-shrink: 0;
-}
 
 .brand:hover {
   color: var(--color-primary);
