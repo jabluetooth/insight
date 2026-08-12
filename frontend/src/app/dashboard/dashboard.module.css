@@ -392,6 +392,27 @@
   margin-top: 2px;
 }
 
+.addWorkflowLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--color-text);
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: border-color 0.12s ease, color 0.12s ease;
+}
+
+.addWorkflowLink:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
 .revokeButton {
   min-height: 40px;
   padding: var(--space-2) var(--space-4);

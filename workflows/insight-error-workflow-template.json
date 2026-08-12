@@ -21,7 +21,7 @@
         "sendBody": true,
         "contentType": "json",
         "specifyBody": "json",
-        "jsonBody": "={{ {\n  \"executionId\": $json.execution.id,\n  \"errorMessage\": $json.execution.error.message,\n  \"lastNodeExecuted\": $json.execution.lastNodeExecuted,\n  \"ingestToken\": \"REPLACE_WITH_YOUR_INGEST_TOKEN\"\n} }}",
+        "jsonBody": "={{ {\n  \"executionId\": $json.execution.id,\n  \"errorMessage\": $json.execution.error.message,\n  \"lastNodeExecuted\": $json.execution.lastNodeExecuted,\n  \"workflowId\": $json.workflow.id,\n  \"workflowName\": $json.workflow.name,\n  \"ingestToken\": \"REPLACE_WITH_YOUR_INGEST_TOKEN\"\n} }}",
         "options": {}
       }
     }
@@ -43,6 +43,6 @@
     "executionOrder": "v1"
   },
   "meta": {
-    "templateNote": "Insight error-workflow template — see workflows/README.md for setup instructions."
+    "templateNote": "Insight error-workflow template — since the \"Add workflow\" auto-install flow, Insight creates and activates this exact workflow on your instance automatically via the n8n REST API, with the ingest token pre-filled. This file is kept for reference and for the manual fallback path — see workflows/README.md."
   }
 }

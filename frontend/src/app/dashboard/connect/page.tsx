@@ -12,10 +12,14 @@ export default function ConnectInstancePage() {
       <header className={styles.intro}>
         <h1>Connect an n8n instance</h1>
         <p>
-          Insight will use this API key only to call read-only execution
-          endpoints on your instance (never write or delete endpoints). The
-          key is encrypted at rest and never shown back to you after this
-          step.
+          Insight uses this API key to read execution data from your
+          instance, and — only when you click <strong>+ Add workflow</strong>{" "}
+          on a specific workflow — to create and activate its own
+          error-workflow template on your instance and point that
+          workflow&apos;s Error Workflow setting at it. Insight never touches
+          that workflow&apos;s own nodes or connections, and never calls any
+          other write or delete endpoint. The key is encrypted at rest and
+          never shown back to you after this step.
         </p>
       </header>
       <ConnectInstanceForm />

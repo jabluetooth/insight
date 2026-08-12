@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { getDiagnosesForInstance, getInstanceById } from "@/lib/dashboard-data";
 import { ConfidenceMeter } from "@/components/ConfidenceMeter";
+import { WorkflowList } from "@/components/WorkflowList";
 import styles from "../../dashboard.module.css";
 
 export const metadata: Metadata = {
@@ -90,6 +91,8 @@ export default async function InstanceDetailPage({
           <p className={styles.pageSubtitle}>{instance.baseUrl}</p>
         </div>
       </div>
+
+      <WorkflowList instanceId={instance.id} />
 
       {diagnoses.length === 0 ? (
         <div className={styles.emptyState}>

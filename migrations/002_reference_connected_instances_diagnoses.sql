@@ -28,7 +28,9 @@ CREATE TABLE IF NOT EXISTS connected_instances
   status            TEXT NOT NULL DEFAULT 'active', -- 'active' | 'revoked'
   encrypted_api_key TEXT,   -- AES-256-GCM ciphertext; written by n8n only
   api_key_nonce     TEXT,   -- per-row nonce; written by n8n only
-  ingest_token_hash TEXT,   -- hash of the token issued at connect time
+  ingest_token_hash TEXT,   -- hash of the token issued at connect time; used to resolve an inbound push by token
+  encrypted_ingest_token TEXT, -- AES-256-GCM ciphertext of the SAME token, iv:tag:ciphertext packed into one string (same format/key as encrypted_api_key); written by n8n only. Needed because auto-installing the error-workflow template (§6.6a) requires Insight to embed a working ingest token in a workflow it authors on the target instance — a one-way hash can verify an inbound token but can't be replayed back out, so the token now needs a reversible copy alongside the irreversible one used for lookup.
+  error_workflow_id TEXT,  -- the target instance's own workflow id for the "Insight - Error Workflow Template" Insight created there (§6.6a); NULL until the first workflow on this instance is auto-installed. Reused (not recreated) for every subsequent workflow install on the same instance.
   last_polled_at    TIMESTAMPTZ,
   created_at        TIMESTAMPTZ NOT NULL DEFAULT now()
 );

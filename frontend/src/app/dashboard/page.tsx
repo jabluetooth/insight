@@ -242,14 +242,14 @@ export default async function DashboardPage() {
 
       {!loadError && instances.length === 0 && (
         <div className={styles.emptyState}>
-          <p className={styles.emptyStateTitle}>Connect your first instance</p>
+          <p className={styles.emptyStateTitle}>Add your first workflow</p>
           <p className={styles.emptyStateBody}>
-            Add your n8n instance&apos;s base URL and an API key, and Insight
-            will start tracking failures and diagnoses for it here — no more
-            pasting execution IDs one at a time.
+            Connect your n8n instance&apos;s base URL and an API key, then
+            pick which workflow to protect — Insight installs automatic
+            failure flagging on it for you, no manual n8n editing required.
           </p>
           <Link href="/dashboard/connect" className={styles.primaryLink}>
-            + Add instance
+            + Add workflow
           </Link>
         </div>
       )}
@@ -283,6 +283,14 @@ export default async function DashboardPage() {
                     <span className={styles.errorCountLabel}>diagnoses</span>
                   </div>
                   {instance.status === "active" && (
+                    <Link
+                      href={`/dashboard/instances/${instance.id}`}
+                      className={styles.addWorkflowLink}
+                    >
+                      + Add workflow
+                    </Link>
+                  )}
+                  {instance.status === "active" && (
                     <RevokeInstanceButton instanceId={instance.id} label={instance.label} />
                   )}
                 </div>
@@ -291,7 +299,7 @@ export default async function DashboardPage() {
           </div>
           <div className={styles.addInstanceRow}>
             <Link href="/dashboard/connect" className={styles.primaryLink}>
-              + Add instance
+              + Connect another instance
             </Link>
           </div>
         </>

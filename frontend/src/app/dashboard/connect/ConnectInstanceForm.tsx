@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import Link from "next/link";
 import styles from "./connect.module.css";
+import { WorkflowList } from "@/components/WorkflowList";
 import type { ConnectInstanceRequestBody, ManageInstanceConnectResult } from "@/lib/types";
 
 type Phase = "idle" | "loading" | "success" | "error";
@@ -22,6 +23,7 @@ export function ConnectInstanceForm() {
   const [phase, setPhase] = useState<Phase>("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [ingestToken, setIngestToken] = useState<string | null>(null);
+  const [instanceId, setInstanceId] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
   const statusRef = useRef<HTMLDivElement>(null);
@@ -80,6 +82,7 @@ export function ConnectInstanceForm() {
       }
 
       setIngestToken(json.ingestToken);
+      setInstanceId(json.instanceId);
       setPhase("success");
       setApiKey("");
     } catch (err) {
@@ -104,26 +107,37 @@ export function ConnectInstanceForm() {
 
   const isLoading = phase === "loading";
 
-  if (phase === "success" && ingestToken) {
+  if (phase === "success" && ingestToken && instanceId) {
     return (
       <div className={styles.statusRegion}>
         <div className={styles.bannerSuccess} ref={statusRef} tabIndex={-1}>
           <div className={styles.bannerContent}>
             <p className={styles.bannerTitle}>Instance connected</p>
             <p className={styles.bannerBody}>
-              Copy this ingest token into the Error Trigger → HTTP Request
-              template workflow on your n8n instance (per the onboarding
-              docs) so failures there reach Insight. It won&apos;t be shown
-              again after you leave this page.
+              Insight scanned this instance for workflows. Click{" "}
+              <strong>+ Add workflow</strong> next to any workflow below to
+              automatically install failure flagging on it — Insight creates
+              and activates the error-workflow template on your instance and
+              points that workflow&apos;s Error Workflow setting at it, no
+              manual n8n editing required.
             </p>
-            <div className={styles.tokenBox}>
-              <code className={styles.tokenValue}>{ingestToken}</code>
-              <button type="button" className={styles.copyButton} onClick={handleCopyToken}>
-                {copied ? "Copied" : "Copy"}
-              </button>
-            </div>
+            <details className={styles.tokenDetails}>
+              <summary>Advanced: raw ingest token</summary>
+              <p className={styles.bannerBody}>
+                Only needed if you&apos;re wiring a workflow up by hand
+                instead of using Add workflow below. Won&apos;t be shown
+                again after you leave this page.
+              </p>
+              <div className={styles.tokenBox}>
+                <code className={styles.tokenValue}>{ingestToken}</code>
+                <button type="button" className={styles.copyButton} onClick={handleCopyToken}>
+                  {copied ? "Copied" : "Copy"}
+                </button>
+              </div>
+            </details>
           </div>
         </div>
+        <WorkflowList instanceId={instanceId} />
         <p className={styles.backToDashboard}>
           <Link href="/dashboard">Back to my instances</Link>
         </p>
@@ -192,8 +206,10 @@ export function ConnectInstanceForm() {
             placeholder="n8n_api_..."
           />
           <span id="apiKey-hint" className={styles.hint}>
-            Encrypted at rest. Insight only ever calls read-only execution
-            endpoints with it, never write or delete endpoints.
+            Encrypted at rest. Used to read execution data, and — only when
+            you add a specific workflow below — to install Insight&apos;s
+            error-workflow template on your instance and point that
+            workflow&apos;s Error Workflow setting at it.
           </span>
           {fieldErrors.apiKey && (
             <span id="apiKey-error" className={styles.fieldError} role="alert">

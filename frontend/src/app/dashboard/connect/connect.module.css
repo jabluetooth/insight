@@ -220,6 +220,22 @@
   width: 100%;
 }
 
+.tokenDetails {
+  margin-top: var(--space-3);
+}
+
+.tokenDetails summary {
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--color-text);
+}
+
+.tokenDetails .bannerBody {
+  margin-top: var(--space-2);
+}
+
 .backToDashboard {
   margin-top: var(--space-4);
 }

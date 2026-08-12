@@ -140,3 +140,37 @@ export interface RevokeInstanceRequestBody {
 export type ManageInstanceRevokeResult =
   | { status: "revoked"; instanceId: string }
   | { status: "error"; message: string };
+
+// ---------------------------------------------------------------------------
+// "Add workflow" auto-install (list a connected instance's own n8n workflows,
+// flag which ones Insight is already monitoring, and install monitoring on
+// the rest with one click). See PRD §5 — this is the one place Insight's
+// stored API key is used for more than read-only calls: creating/activating
+// its own error-workflow template on the target instance, and updating a
+// target workflow's `settings.errorWorkflow` pointer only. It never touches
+// that workflow's own nodes/connections.
+// ---------------------------------------------------------------------------
+
+/** One workflow as reported by the connected instance's own n8n REST API. */
+export interface RemoteWorkflow {
+  id: string;
+  name: string;
+  active: boolean;
+  /** True if this workflow's Error Workflow setting already points at Insight's installed template. */
+  monitored: boolean;
+}
+
+/** What the n8n "manage-instance" workflow returns for a list_workflows call. */
+export type ListWorkflowsResult =
+  | { status: "ok"; workflows: RemoteWorkflow[] }
+  | { status: "error"; message: string; detail?: string };
+
+/** POST body this frontend sends to /api/instances/[id]/workflows/install. */
+export interface InstallWorkflowRequestBody {
+  workflowId: string;
+}
+
+/** What the n8n "manage-instance" workflow returns for an install_workflow call. */
+export type InstallWorkflowResult =
+  | { status: "installed"; workflowId: string; workflowName: string }
+  | { status: "error"; message: string; detail?: string };

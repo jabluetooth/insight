@@ -118,3 +118,77 @@
   color: var(--color-text-muted);
   font-size: 0.9rem;
 }
+
+/* ---- How it works ---- */
+
+.howItWorks {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--space-5) var(--space-8);
+}
+
+.howItWorksHeading {
+  font-size: clamp(1.4rem, 2.6vw, 1.8rem);
+  font-weight: 400;
+  margin: 0 0 var(--space-2) 0;
+}
+
+.howItWorksLead {
+  color: var(--color-text-muted);
+  font-family: var(--font-sans);
+  max-width: 62ch;
+  margin: 0 0 var(--space-6) 0;
+}
+
+.stepList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-4);
+  counter-reset: step;
+}
+
+.step {
+  position: relative;
+  padding: var(--space-5) var(--space-4) var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-raised);
+  box-shadow: var(--shadow-card);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+  .step {
+    background: var(--color-bg-raised-solid);
+  }
+}
+
+.stepNumber {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  color: var(--color-primary-contrast);
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 0.85rem;
+  margin-bottom: var(--space-3);
+}
+
+.stepTitle {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 1rem;
+  margin: 0 0 var(--space-2) 0;
+  color: var(--ink);
+}
+
+.stepBody {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.88rem;
+}
