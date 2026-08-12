@@ -182,15 +182,18 @@ export function DiagnoseForm() {
           errPayload?.message ?? `Diagnosis unavailable (HTTP ${response.status}).`
         );
         setErrorDetail(errPayload?.detail ?? null);
+        setApiKey(""); // held in memory for this one request only — never left sitting in state after use
         return;
       }
 
       setResult(json as DiagnosisResult);
       setPhase("success");
+      setApiKey(""); // held in memory for this one request only — never left sitting in state after use
     } catch (err) {
       setPhase("error");
       setErrorMessage("Diagnosis unavailable — could not reach Insight.");
       setErrorDetail(err instanceof Error ? err.message : String(err));
+      setApiKey("");
     }
   }
 

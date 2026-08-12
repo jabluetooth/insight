@@ -148,7 +148,7 @@ export function WorkflowList({ instanceId }: { instanceId: string }) {
               <button
                 type="button"
                 className={styles.addButton}
-                disabled={installingId === workflow.id}
+                disabled={installingId !== null}
                 onClick={() => handleAddWorkflow(workflow.id)}
               >
                 {installingId === workflow.id ? "Adding…" : "+ Add workflow"}

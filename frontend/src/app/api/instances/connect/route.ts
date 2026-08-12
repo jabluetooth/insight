@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
+import { isSafeInstanceUrl } from "@/lib/instance-url";
 import type { ConnectInstanceRequestBody, ManageInstanceConnectResult } from "@/lib/types";
 
 // Thin proxy in front of the n8n "Insight - Manage Instance" workflow's
@@ -59,10 +60,11 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  try {
-    void new URL(body.baseUrl);
-  } catch {
-    return errorResponse(400, "Instance base URL must be a valid URL.");
+  if (!isSafeInstanceUrl(body.baseUrl)) {
+    return errorResponse(
+      400,
+      "Instance base URL must be a public HTTPS URL (no localhost, internal hostnames, or bare IP addresses)."
+    );
   }
 
   if (!N8N_WEBHOOK_SHARED_SECRET) {

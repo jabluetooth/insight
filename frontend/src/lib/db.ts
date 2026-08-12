@@ -26,12 +26,13 @@ import { Pool } from "pg";
 // Flagging this explicitly rather than labeling the env var "read-only" and
 // having that be untrue.
 //
-// SSL: Neon (and most managed Postgres) requires TLS. `rejectUnauthorized:
-// false` is the common pragmatic setting for serverless PG clients talking
-// to a managed provider's certificate chain — this is a client-side
-// permissiveness setting, unrelated to the separate backend-side Postgres
-// SSL configuration issue this project is currently blocked on for the
-// n8n-facing connection.
+// SSL: Neon (and most managed Postgres) requires TLS, and this pool carries
+// Auth.js adapter writes (session-linked user/account rows) plus every
+// dashboard read across the public internet — `rejectUnauthorized: true`
+// verifies Neon's certificate chain rather than accepting any TLS
+// certificate, since Neon's chain is a standard public CA and there's no
+// need to weaken this. If Neon's chain ever fails to verify in a specific
+// environment, pin their CA explicitly rather than disabling verification.
 const globalForDb = globalThis as unknown as { dashboardDbPool?: Pool };
 
 function createRealPool(): Pool {
@@ -43,7 +44,7 @@ function createRealPool(): Pool {
   }
   return new Pool({
     connectionString,
-    ssl: { rejectUnauthorized: false },
+    ssl: { rejectUnauthorized: true },
   });
 }
 

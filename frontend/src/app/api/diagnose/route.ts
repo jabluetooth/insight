@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { isSafeInstanceUrl } from "@/lib/instance-url";
 import type { DiagnoseRequestBody, DiagnoseErrorResponse } from "@/lib/types";
 
 // Thin proxy in front of the n8n diagnosis pipeline webhook.
@@ -85,12 +86,11 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  if (body.mode === "execution") {
-    try {
-      void new URL(body.baseUrl);
-    } catch {
-      return errorResponse(400, "Instance base URL must be a valid URL.");
-    }
+  if (body.mode === "execution" && !isSafeInstanceUrl(body.baseUrl)) {
+    return errorResponse(
+      400,
+      "Instance base URL must be a public HTTPS URL (no localhost, internal hostnames, or bare IP addresses)."
+    );
   }
 
   if (!N8N_WEBHOOK_SHARED_SECRET) {

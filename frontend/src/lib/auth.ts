@@ -32,6 +32,20 @@ import { getDashboardDb } from "./db";
 //     device remotely") isn't possible the way it would be with database
 //     sessions, since the JWT is valid until it expires. Acceptable for
 //     this project's scale; noted here so it isn't a silent decision.
+// PRD §6.9 open question 1 proposed "OAuth login plus an env-var email
+// allowlist for v1," since the pilot is a handful of known users — that
+// decision was never wired up, leaving sign-up open to any GitHub/Google
+// account. AUTH_ALLOWED_EMAILS (comma-separated, case-insensitive) closes
+// that gap. Left unset, sign-up stays open — this is a deliberate
+// backward-compatible default (a fresh deploy shouldn't lock everyone out
+// because the var was never set), but it means the allowlist is opt-in, not
+// a safety net by itself. Set it before treating this as production-ready
+// for anything beyond the operator's own known users.
+const ALLOWED_EMAILS = (process.env.AUTH_ALLOWED_EMAILS ?? "")
+  .split(",")
+  .map((email) => email.trim().toLowerCase())
+  .filter((email) => email.length > 0);
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PostgresAdapter(getDashboardDb()),
   session: { strategy: "jwt" },
@@ -50,6 +64,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     signIn: "/signin",
   },
   callbacks: {
+    // Gate at sign-in, not after: if AUTH_ALLOWED_EMAILS is set, only those
+    // emails may sign in at all — an email outside the list never reaches
+    // the adapter (no user/account row is created for it), rather than
+    // being created and denied dashboard access some other way.
+    async signIn({ user }) {
+      if (ALLOWED_EMAILS.length === 0) return true;
+      const email = user.email?.toLowerCase();
+      return Boolean(email && ALLOWED_EMAILS.includes(email));
+    },
     // Carry the adapter-assigned user id onto the JWT, then onto the
     // session, so every Server Component / route handler that calls
     // `auth()` gets `session.user.id` without a separate lookup. This id is
