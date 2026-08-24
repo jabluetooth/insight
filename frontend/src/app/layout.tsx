@@ -37,7 +37,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Insight — AI root-cause copilot for n8n workflows",
+  title: "Insight",
   description:
     "Paste a failed n8n execution and get a plain-English root-cause diagnosis in seconds — no account required.",
 };
