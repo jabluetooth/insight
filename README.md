@@ -2,7 +2,7 @@
 
 An AI root-cause copilot for n8n workflow failures. Paste a failed execution - or connect an n8n instance for ongoing monitoring - and get a plain-English diagnosis of which node broke, why, and a suggested fix, instead of reading raw execution JSON by hand.
 
-[![Live](https://img.shields.io/badge/Live_Demo-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://insightby.filheinzrelatorre.com)
+[![Live](https://img.shields.io/badge/Live_Demo-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://insight-azure-five.vercel.app)
 
 ![n8n](https://img.shields.io/badge/n8n-EA4B71?style=for-the-badge&logo=n8n&logoColor=white)
 ![Next.js](https://img.shields.io/badge/Next.js-black?style=for-the-badge&logo=next.js&logoColor=white)
