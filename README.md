@@ -2,9 +2,22 @@
 
 An AI root-cause copilot for n8n workflow failures. Paste a failed execution - or connect an n8n instance for ongoing monitoring - and get a plain-English diagnosis of which node broke, why, and a suggested fix, instead of reading raw execution JSON by hand.
 
-**Live:** [insight-azure-five.vercel.app](https://insight-azure-five.vercel.app) - try `/diagnose` with no signup required.
+[![Live](https://img.shields.io/badge/Live_Demo-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://insight-azure-five.vercel.app)
 
-Full product spec, architecture rationale, and eval plan: [PRD.md](PRD.md).
+![n8n](https://img.shields.io/badge/n8n-EA4B71?style=for-the-badge&logo=n8n&logoColor=white)
+![Next.js](https://img.shields.io/badge/Next.js-black?style=for-the-badge&logo=next.js&logoColor=white)
+![Groq](https://img.shields.io/badge/Groq-F55036?style=for-the-badge&logo=groq&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
+
+<br>
+
+<!-- HERO: short GIF (10-15s) of pasting a failed n8n execution into /diagnose and the
+     plain-English diagnosis appearing (which node, why, suggested fix) - that
+     before/after (raw execution JSON vs. the readable diagnosis) is the entire pitch,
+     so show both. Save as docs/demo.gif, add here as: -->
+<!-- <p align="center"><img src="docs/demo.gif" alt="Insight demo" width="800"></p> -->
+
+Try it with no signup required at `/diagnose`. Full product spec, architecture rationale, and eval plan: [PRD.md](PRD.md).
 
 ## How it works
 
@@ -67,3 +80,20 @@ This is a deliberate, disclosed change to Insight's trust model: as of the "Add 
 - **2026-07-29** - Added retry handling (3 tries, backoff) to the execution-fetch, API-key-validation, and Postgres write steps in the n8n backend, none of which previously had any resilience against transient failures.
 - **2026-07-29** - Replaced plaintext storage of the per-instance ingest token and connected n8n API key with real cryptography: the ingest token is now SHA-256 hashed before storage/comparison, and the API key is AES-256-GCM encrypted at rest and only decrypted in-memory when it's actually needed to call the customer's instance. **Operational follow-up:** this requires an `INSIGHT_ENCRYPTION_KEY` environment variable set on the n8n instance; existing rows should be re-hashed/re-encrypted once it's set, since the encryption step will otherwise throw.
 - **2026-07-29** - Cleanly isolated the disabled knowledge-base retrieval scaffold (Qdrant search, reranker, embedding nodes) so it's a fully disconnected island with no live path in or out, instead of sitting silently upstream of an enabled node. Fixed a placeholder value left in the (disabled) reranker's URL and a malformed (disabled) Qdrant search URL, and clarified the workflow's own documentation that this is scaffolding for future RAG integration, not an active feature - see "Current status" above.
+
+---
+
+## About the developer
+
+**Fil Heinz O. Re La Torre** - Automation & AI Solutions Engineer, building integrations and AI-backed workflows that go from idea to production in days.
+
+[![Portfolio](https://img.shields.io/badge/Portfolio-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://www.filheinzrelatorre.com)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://ph.linkedin.com/in/filheinzrelatorre)
+[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/jabluetooth)
+[![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:filheinz27@gmail.com)
+
+**Other projects:** [Match](https://github.com/jabluetooth/match) · [ZeroPress](https://github.com/jabluetooth/zeropress) · [Mimo](https://github.com/jabluetooth/mimo) · [Se7en](https://github.com/jabluetooth/se7en) · [see all →](https://github.com/jabluetooth)
+
+## License
+
+MIT - see [LICENSE](LICENSE)
