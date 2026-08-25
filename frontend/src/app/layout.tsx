@@ -4,6 +4,7 @@ import Link from "next/link";
 import { auth, signOut } from "@/lib/auth";
 import { UserMenu } from "./UserMenu";
 import { NavLinks } from "./NavLinks";
+import { Footer } from "@/components/Footer";
 import "./globals.css";
 import styles from "./layout.module.css";
 
@@ -99,14 +100,7 @@ export default async function RootLayout({
           </div>
         </header>
         <main id="main-content">{children}</main>
-        <footer className={styles.footer}>
-          <p>
-            Insight is a portfolio project — an AI root-cause copilot for n8n
-            workflow failures. All diagnosis logic runs in an n8n workflow;
-            this site is a thin, stateless front end that forwards your
-            request there and renders what comes back.
-          </p>
-        </footer>
+        <Footer />
       </body>
     </html>
   );
