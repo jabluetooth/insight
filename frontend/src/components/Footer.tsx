@@ -31,24 +31,26 @@ export function Footer() {
       <div className={styles.inner}>
         <div className={styles.brandPanel}>
           <span className={styles.wordmark}>Insight</span>
-          <p className={styles.tagline}>
-            An AI root-cause copilot for n8n workflow failures.
-          </p>
-          <div className={styles.iconRow}>
-            {SOCIAL_LINKS.map(({ label, href, Icon }) => (
-              <a
-                key={href}
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={label}
-                className={styles.iconLink}
-              >
-                <Icon />
-              </a>
-            ))}
+          <div className={styles.brandFoot}>
+            <p className={styles.tagline}>
+              An AI root-cause copilot for n8n workflow failures.
+            </p>
+            <div className={styles.iconRow}>
+              {SOCIAL_LINKS.map(({ label, href, Icon }) => (
+                <a
+                  key={href}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className={styles.iconLink}
+                >
+                  <Icon />
+                </a>
+              ))}
+            </div>
+            <p className={styles.copyright}>&copy; {year} Insight</p>
           </div>
-          <p className={styles.copyright}>&copy; {year} Insight</p>
         </div>
 
         <nav aria-label="Footer" className={styles.linksPanel}>

@@ -9,7 +9,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  align-items: flex-end;
+  align-items: stretch;
   gap: var(--space-4) var(--space-6);
 }
 
@@ -21,7 +21,7 @@
   flex: 1 1 240px;
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  justify-content: space-between;
   padding: var(--space-6) var(--space-6) var(--space-8);
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
   background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
@@ -34,6 +34,12 @@
   font-style: italic;
   font-size: 1.3rem;
   letter-spacing: -0.01em;
+}
+
+.brandFoot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
 }
 
 .tagline {
@@ -50,7 +56,6 @@
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  margin-top: var(--space-1);
 }
 
 .iconLink {
@@ -73,7 +78,7 @@
   font-size: 0.78rem;
   color: var(--color-primary-contrast);
   opacity: 0.65;
-  margin: var(--space-1) 0 0 0;
+  margin: 0;
 }
 
 .linksPanel {
