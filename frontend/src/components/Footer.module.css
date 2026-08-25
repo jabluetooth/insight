@@ -1,23 +1,31 @@
 .footer {
   margin-top: auto;
-  border-top: 1px solid var(--line);
 }
 
 .inner {
   max-width: var(--max-width);
   margin: 0 auto;
-  padding: var(--space-6) var(--space-5);
+  padding: var(--space-6) var(--space-5) 0;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  gap: var(--space-6);
+  align-items: flex-end;
+  gap: var(--space-4) var(--space-6);
 }
+
+/* Both panels are rounded on top only and flush (no radius, no border, no
+   bottom padding beyond the content) on the bottom — they read as cut off
+   by the page's own bottom edge rather than floating, fully-enclosed cards. */
 
 .brandPanel {
   flex: 1 1 240px;
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
+  padding: var(--space-6) var(--space-6) var(--space-8);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  color: var(--color-primary-contrast);
 }
 
 .wordmark {
@@ -25,14 +33,15 @@
   font-weight: 500;
   font-style: italic;
   font-size: 1.3rem;
-  color: var(--color-primary);
   letter-spacing: -0.01em;
 }
 
 .tagline {
   font-family: var(--font-sans);
   font-size: 0.9rem;
-  color: var(--color-text-muted);
+  font-weight: 600;
+  color: var(--color-primary-contrast);
+  opacity: 0.82;
   max-width: 34ch;
   margin: 0;
 }
@@ -50,23 +59,38 @@
   justify-content: center;
   width: 36px;
   height: 36px;
-  color: var(--ink-2);
-  transition: color 0.12s ease;
+  color: var(--color-primary-contrast);
+  opacity: 0.75;
+  transition: opacity 0.12s ease;
 }
 
 .iconLink:hover {
-  color: var(--color-primary);
+  opacity: 1;
 }
 
 .copyright {
   font-family: var(--font-sans);
   font-size: 0.78rem;
-  color: var(--ink-3);
+  color: var(--color-primary-contrast);
+  opacity: 0.65;
   margin: var(--space-1) 0 0 0;
 }
 
 .linksPanel {
-  flex: 0 1 180px;
+  flex: 0 1 200px;
+  padding: var(--space-6) var(--space-6) var(--space-8);
+  border: 1px solid var(--line);
+  border-bottom: none;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  background: var(--color-bg-raised);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+  .linksPanel {
+    background: var(--color-bg-raised-solid);
+  }
 }
 
 .columnTitle {
