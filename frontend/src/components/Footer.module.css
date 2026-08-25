@@ -19,10 +19,11 @@
 
 .brandPanel {
   flex: 1 1 240px;
+  min-height: 300px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: var(--space-6) var(--space-6) var(--space-8);
+  padding: var(--space-6) var(--space-6) var(--space-5);
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
   background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
   color: var(--color-primary-contrast);
@@ -83,7 +84,7 @@
 
 .linksPanel {
   flex: 0 1 200px;
-  padding: var(--space-6) var(--space-6) var(--space-8);
+  padding: var(--space-6) var(--space-6) var(--space-5);
   border: 1px solid var(--line);
   border-bottom: none;
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
