@@ -90,7 +90,7 @@ export default function Home() {
         </ol>
         <div className={styles.howItWorksActions}>
           <Link href="/dashboard/connect" className={styles.secondaryCta}>
-            Connect your instance
+            Start monitoring your instance
           </Link>
         </div>
       </section>
