@@ -1,96 +1,72 @@
 .footer {
   margin-top: auto;
-  padding: var(--space-6) var(--space-5) var(--space-7);
+  border-top: 1px solid var(--line);
 }
 
 .inner {
   max-width: var(--max-width);
   margin: 0 auto;
-  display: grid;
-  grid-template-columns: minmax(240px, 1fr) minmax(280px, 2fr);
-  gap: var(--space-4);
-}
-
-@media (max-width: 640px) {
-  .inner {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* ---- Brand panel: same gradient + dark contrast text already used on
-   every primary pill button (.primaryCta, .stepNumber), just scaled up to
-   card size, so this reads as the app's own accent treatment rather than a
-   one-off color. ---- */
-
-.brandPanel {
-  padding: var(--space-6);
-  border-radius: var(--radius-lg);
-  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
-  color: var(--color-primary-contrast);
-  box-shadow: var(--shadow-card);
+  padding: var(--space-6) var(--space-5);
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   justify-content: space-between;
   gap: var(--space-6);
 }
 
+.brandPanel {
+  flex: 1 1 240px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
 .wordmark {
-  display: block;
   font-family: var(--font-display);
   font-weight: 500;
   font-style: italic;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
+  color: var(--color-primary);
   letter-spacing: -0.01em;
-  margin-bottom: var(--space-2);
 }
 
 .tagline {
   font-family: var(--font-sans);
-  font-size: 0.95rem;
-  font-weight: 600;
-  max-width: 30ch;
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  max-width: 34ch;
   margin: 0;
-  opacity: 0.85;
 }
 
-.disclosure {
-  font-family: var(--font-sans);
-  font-size: 0.8rem;
-  margin: 0 0 var(--space-3) 0;
-  opacity: 0.75;
+.iconRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+}
+
+.iconLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  color: var(--ink-2);
+  transition: color 0.12s ease;
+}
+
+.iconLink:hover {
+  color: var(--color-primary);
 }
 
 .copyright {
   font-family: var(--font-sans);
-  font-size: 0.76rem;
-  margin: 0;
-  opacity: 0.65;
+  font-size: 0.78rem;
+  color: var(--ink-3);
+  margin: var(--space-1) 0 0 0;
 }
-
-/* ---- Links panel: identical glass-card recipe used by every other card
-   in the app (.instanceCard, .resultCard, .step, ...). ---- */
 
 .linksPanel {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(120px, 1fr));
-  gap: var(--space-5);
-  padding: var(--space-6);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-lg);
-  background: var(--color-bg-raised);
-  box-shadow: var(--shadow-card);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-}
-
-@supports not (backdrop-filter: blur(1px)) {
-  .linksPanel {
-    background: var(--color-bg-raised-solid);
-  }
-}
-
-.column {
-  min-width: 0;
+  flex: 0 1 180px;
 }
 
 .columnTitle {
