@@ -49,7 +49,9 @@ export function Footer() {
                 </a>
               ))}
             </div>
-            <p className={styles.copyright}>&copy; {year} Insight</p>
+            <p className={styles.copyright}>
+              &copy; {year} Insight by Fil Heinz Re La Torre
+            </p>
           </div>
         </div>
 
