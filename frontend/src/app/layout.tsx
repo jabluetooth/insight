@@ -3,6 +3,7 @@ import { Fraunces, Manrope, Geist_Mono } from "next/font/google";
 import Link from "next/link";
 import { auth, signOut } from "@/lib/auth";
 import { UserMenu } from "./UserMenu";
+import { NavLinks } from "./NavLinks";
 import "./globals.css";
 import styles from "./layout.module.css";
 
@@ -82,14 +83,7 @@ export default async function RootLayout({
               Insight
             </Link>
             <div className={styles.headerRight}>
-              <nav aria-label="Main" className={styles.nav}>
-                <Link href="/diagnose" className={styles.navLink}>
-                  Diagnose a failure
-                </Link>
-                <Link href="/dashboard" className={styles.navLink}>
-                  Dashboard
-                </Link>
-              </nav>
+              <NavLinks />
               {session?.user && (
                 <UserMenu
                   name={session.user.name ?? null}

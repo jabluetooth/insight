@@ -135,6 +135,12 @@ export function WorkflowList({ instanceId }: { instanceId: string }) {
   return (
     <div className={styles.wrap}>
       <p className={styles.heading}>Workflows on this instance</p>
+      {installingId !== null && (
+        <p className={styles.installingNote} role="status">
+          Adding a workflow — other rows are temporarily disabled until this
+          finishes.
+        </p>
+      )}
       <div className={styles.list}>
         {state.workflows.map((workflow) => (
           <div key={workflow.id} className={styles.row}>

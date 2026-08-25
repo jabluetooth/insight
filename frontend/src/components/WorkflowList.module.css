@@ -20,6 +20,13 @@
   margin: 0;
 }
 
+.installingNote {
+  color: var(--color-text-muted);
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  margin: 0 0 var(--space-3) 0;
+}
+
 .list {
   display: flex;
   flex-direction: column;

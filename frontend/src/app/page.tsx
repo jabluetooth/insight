@@ -88,6 +88,11 @@ export default function Home() {
             </p>
           </li>
         </ol>
+        <div className={styles.howItWorksActions}>
+          <Link href="/dashboard/connect" className={styles.secondaryCta}>
+            Connect your instance
+          </Link>
+        </div>
       </section>
     </div>
   );

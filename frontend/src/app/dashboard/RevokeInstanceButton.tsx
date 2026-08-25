@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./dashboard.module.css";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
 import type { ManageInstanceRevokeResult, RevokeInstanceRequestBody } from "@/lib/types";
 
 export function RevokeInstanceButton({
@@ -15,13 +16,10 @@ export function RevokeInstanceButton({
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
-  async function handleRevoke() {
+  function handleRevoke() {
     setError(null);
-    const confirmed = window.confirm(
-      `Revoke "${label}"? Its stored API key access is invalidated immediately. This can't be undone from here.`
-    );
-    if (!confirmed) return;
 
     startTransition(async () => {
       try {
@@ -55,7 +53,7 @@ export function RevokeInstanceButton({
       <button
         type="button"
         className={styles.revokeButton}
-        onClick={handleRevoke}
+        onClick={() => setConfirmOpen(true)}
         disabled={isPending}
       >
         {isPending ? "Revoking…" : "Revoke"}
@@ -65,6 +63,19 @@ export function RevokeInstanceButton({
           {error}
         </p>
       )}
+      <ConfirmDialog
+        open={confirmOpen}
+        title={`Revoke "${label}"?`}
+        body="Its stored API key access is invalidated immediately. This can't be undone from here."
+        confirmLabel="Revoke"
+        cancelLabel="Cancel"
+        danger
+        onConfirm={() => {
+          setConfirmOpen(false);
+          handleRevoke();
+        }}
+        onCancel={() => setConfirmOpen(false)}
+      />
     </div>
   );
 }

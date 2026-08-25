@@ -94,6 +94,15 @@
   color: var(--ink);
 }
 
+.navLinkActive {
+  color: var(--ink);
+  background: var(--color-primary-soft);
+}
+
+.navLinkActive:hover {
+  background: var(--color-primary-soft);
+}
+
 .footer {
   margin-top: auto;
   border-top: 1px solid var(--line);
