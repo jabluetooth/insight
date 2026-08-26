@@ -116,6 +116,8 @@
 
   .nav {
     gap: var(--space-1);
+    flex-wrap: wrap;
+    row-gap: var(--space-1);
   }
 
   .navLink {

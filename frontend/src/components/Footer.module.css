@@ -129,3 +129,17 @@
 .link:hover {
   color: var(--color-primary);
 }
+
+/* Below this, brandPanel's fixed min-height leaves a tall, sparse-looking
+   block once it's stacked full-width instead of sitting beside linksPanel —
+   let it size to its own content instead. linksPanel goes full-width too,
+   matching the sibling projects' footer (see TranslateThis's Footer.tsx). */
+@media (max-width: 480px) {
+  .brandPanel {
+    min-height: 0;
+  }
+
+  .linksPanel {
+    flex-basis: 100%;
+  }
+}
