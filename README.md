@@ -11,11 +11,7 @@ An AI root-cause copilot for n8n workflow failures. Paste a failed execution - o
 
 <br>
 
-<!-- HERO: short GIF (10-15s) of pasting a failed n8n execution into /diagnose and the
-     plain-English diagnosis appearing (which node, why, suggested fix) - that
-     before/after (raw execution JSON vs. the readable diagnosis) is the entire pitch,
-     so show both. Save as docs/demo.gif, add here as: -->
-<!-- <p align="center"><img src="docs/demo.gif" alt="Insight demo" width="800"></p> -->
+<p align="center"><img src="docs/demo.gif" alt="Insight demo" width="800"></p>
 
 Try it with no signup required at `/diagnose`. Full product spec, architecture rationale, and eval plan: [PRD.md](PRD.md).
 
