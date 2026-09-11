@@ -1,60 +1,40 @@
+/* Landing page. Deliberately not a boxed "hero card" sitting inside a
+   padded shell (a nested-card pattern that read as generic UI-kit chrome
+   around what should be the page's own headline) — hero copy sits directly
+   on the page background, at full typographic weight. Card chrome (the
+   fact panel, the step list) is reserved for genuinely distinct secondary
+   content, so the boxing itself carries meaning instead of being applied
+   uniformly to everything. */
+
 .hero {
-  padding: var(--space-7) var(--space-5) var(--space-8);
-  position: relative;
+  padding: var(--space-8) var(--space-5) var(--space-7);
 }
 
-.heroInner {
+.heroContent {
   max-width: var(--max-width);
   margin: 0 auto;
-  position: relative;
-  padding: var(--space-7) var(--space-6);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--line);
-  background: var(--color-bg-raised);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  box-shadow: var(--shadow-card);
-  overflow: hidden;
-  isolation: isolate;
-}
-
-@supports not (backdrop-filter: blur(1px)) {
-  .heroInner {
-    background: var(--color-bg-raised-solid);
-  }
-}
-
-/* Soft cyan/teal glow sitting behind the copy — a quiet echo of the aurora,
-   contained inside the card rather than a full side-panel orb (the content
-   here is a single narrow column, not a wide dashboard split). */
-.heroInner::before {
-  content: "";
-  position: absolute;
-  inset: -30% -10% auto auto;
-  width: 60%;
-  aspect-ratio: 1;
-  background: radial-gradient(circle, rgba(34, 211, 238, 0.35), transparent 70%);
-  filter: blur(10px);
-  z-index: -1;
-  pointer-events: none;
 }
 
 .eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  font-size: 0.75rem;
   font-weight: 700;
-  font-family: var(--font-sans);
+  font-family: var(--font-mono);
   color: var(--color-primary);
-  margin: 0 0 var(--space-3) 0;
+  margin: 0 0 var(--space-4) 0;
 }
 
 .hero h1 {
-  font-size: clamp(2.1rem, 5vw, 3.1rem);
+  font-size: clamp(2.3rem, 5.6vw, 3.6rem);
   font-weight: 400;
-  line-height: 1.08;
+  line-height: 1.06;
   margin: 0 0 var(--space-4) 0;
-  max-width: 20ch;
+  max-width: 18ch;
+  text-wrap: balance;
 }
 
 .lead {
@@ -66,7 +46,10 @@
 }
 
 .actions {
-  margin-bottom: var(--space-8);
+  margin-bottom: var(--space-7);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
 }
 
 .primaryCta {
@@ -90,33 +73,51 @@
   box-shadow: 0 14px 30px rgba(34, 211, 238, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 
-.factList {
-  display: grid;
-  gap: var(--space-4);
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+/* Fact panel — one bordered spec sheet with mono-tagged rows rather than
+   three separate floating cards. Ties into the product's own subject
+   matter (turning raw structured data into something legible) instead of
+   a generic 3-up icon-card grid. */
+.factPanel {
   margin: 0;
-  padding-top: var(--space-6);
-  border-top: 1px dashed var(--line-2);
-}
-
-.factList > div {
-  padding: var(--space-4);
-  border-radius: var(--radius-md);
   border: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.03);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-raised);
+  overflow: hidden;
 }
 
-.factList dt {
+.factRow {
+  display: grid;
+  grid-template-columns: minmax(180px, 260px) 1fr;
+  gap: var(--space-2) var(--space-5);
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--line);
+}
+
+.factRow:last-child {
+  border-bottom: none;
+}
+
+.factTag {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
   font-weight: 700;
-  font-size: 0.95rem;
-  margin: 0 0 var(--space-1) 0;
-  color: var(--ink);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-primary);
+  margin: 0;
 }
 
-.factList dd {
+.factBody {
   margin: 0;
   color: var(--color-text-muted);
-  font-size: 0.9rem;
+  font-size: 0.92rem;
+}
+
+@media (max-width: 560px) {
+  .factRow {
+    grid-template-columns: 1fr;
+    gap: var(--space-1);
+  }
 }
 
 /* ---- How it works ---- */
@@ -124,7 +125,7 @@
 .howItWorks {
   max-width: var(--max-width);
   margin: 0 auto;
-  padding: 0 var(--space-5) var(--space-8);
+  padding: var(--space-8) var(--space-5);
 }
 
 .howItWorksHeading {
@@ -140,59 +141,101 @@
   margin: 0 0 var(--space-6) 0;
 }
 
+/* A vertical, narrative-driven thread rather than four identical boxes in a
+   row — the previous pass fixed the circled-numeral tell but kept the
+   underlying "N equal cards in a grid" structure, which is still the
+   generic shape of this pattern. This drops card chrome (border/
+   background/shadow) entirely: a thin line threads down through each
+   step's numeral, so sequence is carried by the line and by whitespace
+   (rule: vertical rhythm), not by boxing every step identically. */
 .stepList {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: var(--space-4);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-7);
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
+.stepList::before {
+  content: "";
+  position: absolute;
+  top: 6px;
+  bottom: 6px;
+  left: 27px;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, var(--line-2) 6%, var(--line-2) 94%, transparent);
+}
+
+/* Three explicit grid children (mark, title, body) on a 2-column track —
+   grid-auto-flow's default "row" placement would otherwise wrap the third
+   child (stepBody) onto a new row starting back at column 1, squeezing it
+   into the 56px numeral column instead of under the title. Placing all
+   three explicitly avoids relying on auto-placement guessing right. */
 .step {
   position: relative;
-  padding: var(--space-5) var(--space-4) var(--space-4);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-lg);
-  background: var(--color-bg-raised);
-  box-shadow: var(--shadow-card);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  grid-template-rows: auto auto;
+  column-gap: var(--space-5);
+  row-gap: 0;
 }
 
-@supports not (backdrop-filter: blur(1px)) {
-  .step {
-    background: var(--color-bg-raised-solid);
-  }
-}
-
-.stepNumber {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
-  color: var(--color-primary-contrast);
-  font-family: var(--font-sans);
-  font-weight: 700;
-  font-size: 0.85rem;
-  margin-bottom: var(--space-3);
+/* Typographic numeral rendered above the connecting line (z-index: 1 vs.
+   the line's implicit 0) — a waypoint on the thread rather than a filled
+   circular badge, which is the generic "1 2 3 in circles" AI tell. Spans
+   both rows so it sits beside the title+body block as a unit. */
+.stepMark {
+  grid-column: 1;
+  grid-row: 1 / -1;
+  align-self: start;
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 56px;
+  text-align: center;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.9rem;
+  line-height: 1;
+  color: var(--color-primary);
 }
 
 .stepTitle {
+  grid-column: 2;
+  grid-row: 1;
   font-family: var(--font-sans);
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 1.02rem;
   margin: 0 0 var(--space-2) 0;
   color: var(--ink);
 }
 
 .stepBody {
+  grid-column: 2;
+  grid-row: 2;
   margin: 0;
+  max-width: 52ch;
   color: var(--color-text-muted);
-  font-size: 0.88rem;
+  font-size: 0.92rem;
+}
+
+@media (max-width: 480px) {
+  .step {
+    grid-template-columns: 34px 1fr;
+    column-gap: var(--space-3);
+  }
+
+  .stepMark {
+    width: 34px;
+    font-size: 1.3rem;
+    line-height: 1;
+  }
+
+  .stepList::before {
+    left: 16px;
+  }
 }
 
 .howItWorksActions {
