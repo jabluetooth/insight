@@ -4,6 +4,19 @@
   padding: var(--space-6) var(--space-5) var(--space-8);
 }
 
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  color: var(--color-primary);
+  margin: 0 0 var(--space-3) 0;
+}
+
 .intro h1 {
   font-size: clamp(1.7rem, 3.4vw, 2.3rem);
   font-weight: 400;
@@ -19,20 +32,12 @@
 /* ---- Form shell ---- */
 
 .form {
-  margin-top: var(--space-6);
+  margin-top: var(--space-7);
   background: var(--color-bg-raised);
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
   padding: var(--space-6);
   box-shadow: var(--shadow-card);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-}
-
-@supports not (backdrop-filter: blur(1px)) {
-  .form {
-    background: var(--color-bg-raised-solid);
-  }
 }
 
 .fieldset {
@@ -48,46 +53,64 @@
   font-family: var(--font-sans);
 }
 
-.modeToggle {
-  display: flex;
-  gap: var(--space-2);
-  flex-wrap: wrap;
+/* Which of the two modes to use is the one choice that determines the
+   entire rest of the form — worth more visual weight than a row of small
+   pill-shaped radio buttons gave it. Two large selectable cards instead,
+   each carrying its own icon and one-line description, so the decision
+   reads as a genuine fork rather than a settings toggle. */
+.modeChoices {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-3);
 }
 
-.modeOption {
+.modeCard {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.03);
+  cursor: pointer;
+  transition: border-color 0.12s ease, background 0.12s ease;
 }
 
-.modeOption input {
+.modeCard input {
   position: absolute;
   opacity: 0;
   width: 1px;
   height: 1px;
 }
 
-.modeOptionLabel {
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
-  padding: var(--space-2) var(--space-4);
-  border-radius: var(--radius-pill);
-  border: 1px solid var(--line);
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 0.92rem;
+.modeCardIcon {
   color: var(--color-text-muted);
-  background: rgba(255, 255, 255, 0.03);
-  transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease;
+  transition: color 0.12s ease;
 }
 
-.modeOption input:checked + .modeOptionLabel {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-  background: var(--color-primary-soft);
+.modeCardTitle {
   font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--color-text);
 }
 
-.modeOption input:focus-visible + .modeOptionLabel {
+.modeCardBody {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.modeCard:has(input:checked) {
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
+}
+
+.modeCard:has(input:checked) .modeCardIcon {
+  color: var(--color-primary);
+}
+
+.modeCard:has(input:focus-visible) {
   outline: 3px solid var(--color-primary);
   outline-offset: 2px;
   box-shadow: 0 0 0 6px rgba(34, 211, 238, 0.18);
@@ -133,10 +156,17 @@
   background: rgba(255, 255, 255, 0.05);
 }
 
+/* Same treatment as the mode cards' selected state, exactly — border-color
+   plus a soft tinted background, no outline ring at all. The color change
+   (muted gray to bright cyan, high contrast against the near-black field)
+   plus the background tint is itself a visible focus indicator; it doesn't
+   need an outline stacked on top to satisfy that, and the outline was the
+   remaining source of the highlight reading as too big. */
 .input:focus-visible {
-  outline: 3px solid var(--color-primary);
-  outline-offset: 1px;
+  outline: none;
   border-color: var(--color-primary);
+  background: var(--color-primary-soft);
+  box-shadow: none;
 }
 
 .input[aria-invalid="true"] {
@@ -288,8 +318,17 @@
   padding: var(--space-4);
   border-radius: var(--radius-md);
   border: 1px solid var(--line);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
+}
+
+/* Leading icon slot — loading has its own pulse animation instead (already
+   a distinct "in progress" visual), but error/transient need a mark that
+   isn't color alone: relying only on red-vs-amber background to tell "this
+   failed" from "this is a heads-up" fails for anyone who can't distinguish
+   those hues, and the two are easy to mistake for each other at a glance
+   otherwise. */
+.bannerIcon {
+  flex-shrink: 0;
+  margin-top: 2px;
 }
 
 .bannerLoading {
@@ -358,14 +397,6 @@
   border-radius: var(--radius-lg);
   padding: var(--space-6);
   box-shadow: var(--shadow-card);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-}
-
-@supports not (backdrop-filter: blur(1px)) {
-  .resultCard {
-    background: var(--color-bg-raised-solid);
-  }
 }
 
 .resultCard:focus-visible {

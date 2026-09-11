@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { BugIcon } from "@phosphor-icons/react/ssr";
 import { DiagnoseForm } from "./DiagnoseForm";
 import styles from "./diagnose.module.css";
 
@@ -12,6 +13,10 @@ export default function DiagnosePage() {
   return (
     <div className={styles.page}>
       <header className={styles.intro}>
+        <p className={styles.eyebrow}>
+          <BugIcon size={14} weight="bold" aria-hidden="true" />
+          AI root-cause diagnosis
+        </p>
         <h1>Diagnose a failed execution</h1>
         <p>
           Provide an execution ID plus your own n8n instance details, or

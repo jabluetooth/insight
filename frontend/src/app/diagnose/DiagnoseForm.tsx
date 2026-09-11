@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
+import { PlugsConnectedIcon, UploadSimpleIcon, WarningIcon, WarningOctagonIcon } from "@phosphor-icons/react";
 import styles from "./diagnose.module.css";
 import { ConfidenceMeter } from "@/components/ConfidenceMeter";
 import { getConfidenceTier } from "@/lib/types";
@@ -206,8 +207,8 @@ export function DiagnoseForm() {
           <legend className={styles.legend}>
             How would you like to submit the failure?
           </legend>
-          <div className={styles.modeToggle}>
-            <span className={styles.modeOption}>
+          <div className={styles.modeChoices}>
+            <label className={styles.modeCard} htmlFor={`${modeGroupName}-execution`}>
               <input
                 type="radio"
                 id={`${modeGroupName}-execution`}
@@ -220,14 +221,13 @@ export function DiagnoseForm() {
                   resetOutcome();
                 }}
               />
-              <label
-                htmlFor={`${modeGroupName}-execution`}
-                className={styles.modeOptionLabel}
-              >
-                Execution ID + my instance
-              </label>
-            </span>
-            <span className={styles.modeOption}>
+              <PlugsConnectedIcon size={22} weight="bold" className={styles.modeCardIcon} aria-hidden="true" />
+              <span className={styles.modeCardTitle}>Execution ID + my instance</span>
+              <span className={styles.modeCardBody}>
+                Point Insight at your live n8n instance and one failed execution ID.
+              </span>
+            </label>
+            <label className={styles.modeCard} htmlFor={`${modeGroupName}-upload`}>
               <input
                 type="radio"
                 id={`${modeGroupName}-upload`}
@@ -240,13 +240,12 @@ export function DiagnoseForm() {
                   resetOutcome();
                 }}
               />
-              <label
-                htmlFor={`${modeGroupName}-upload`}
-                className={styles.modeOptionLabel}
-              >
-                Upload exported JSON
-              </label>
-            </span>
+              <UploadSimpleIcon size={22} weight="bold" className={styles.modeCardIcon} aria-hidden="true" />
+              <span className={styles.modeCardTitle}>Upload exported JSON</span>
+              <span className={styles.modeCardBody}>
+                No live instance needed — export the failed execution and drop the file in.
+              </span>
+            </label>
           </div>
         </fieldset>
 
@@ -380,6 +379,7 @@ export function DiagnoseForm() {
 
         {phase === "error" && (
           <div className={styles.bannerError} ref={statusRef} tabIndex={-1} role="alert">
+            <WarningOctagonIcon size={20} weight="bold" className={styles.bannerIcon} aria-hidden="true" />
             <div>
               <p className={styles.bannerTitle}>Diagnosis unavailable</p>
               <p className={styles.bannerBody}>{errorMessage}</p>
@@ -411,6 +411,7 @@ function DiagnosisResultCard({
   if (result.status === "transient") {
     return (
       <div className={styles.bannerTransient} ref={resultRef} tabIndex={-1}>
+        <WarningIcon size={20} weight="bold" className={styles.bannerIcon} aria-hidden="true" />
         <div>
           <p className={styles.bannerTitle}>Looks transient</p>
           <p className={styles.bannerBody}>
@@ -425,6 +426,7 @@ function DiagnosisResultCard({
   if (result.status === "error") {
     return (
       <div className={styles.bannerError} ref={resultRef} tabIndex={-1} role="alert">
+        <WarningOctagonIcon size={20} weight="bold" className={styles.bannerIcon} aria-hidden="true" />
         <div>
           <p className={styles.bannerTitle}>Diagnosis unavailable</p>
           <p className={styles.bannerBody}>
