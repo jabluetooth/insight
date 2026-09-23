@@ -1,20 +1,15 @@
 import { redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
-import styles from "./dashboard.module.css";
+import { auth, signOut } from "@/lib/auth";
+import AppShell from "@/components/AppShell";
 
 // Authoritative auth gate for every /dashboard/* route (src/proxy.ts is the
 // fast first line of defense; this is the one that actually matters — see
 // the comment in proxy.ts on why Proxy alone isn't trusted for this).
 //
-// This layout no longer renders its own topbar — the signed-in user's email
-// and sign-out control live in the root layout's header now (src/app/layout.tsx),
-// so there's exactly one glass header instead of two stacked on every
-// /dashboard/* route.
-export default async function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+// It also renders the dashboard's own app shell, including the signed-in
+// user's account menu. The public pages don't read the session at all, so
+// they stay static.
+export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
 
   if (!session?.user) {
@@ -22,8 +17,14 @@ export default async function DashboardLayout({
   }
 
   return (
-    <div className={styles.shell}>
-      <div className={styles.content}>{children}</div>
-    </div>
+    <AppShell
+      user={{ name: session.user.name ?? null, email: session.user.email ?? null, image: session.user.image ?? null }}
+      signOutAction={async () => {
+        "use server";
+        await signOut({ redirectTo: "/" });
+      }}
+    >
+      {children}
+    </AppShell>
   );
 }

@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { auth } from "@/lib/auth";
 import { getPrimaryProviderForUser } from "@/lib/auth-data";
-import styles from "./settings.module.css";
+import Tag from "@/components/marketing/Tag";
 
 export const metadata: Metadata = {
-  title: "Settings — Insight",
+  title: "Settings",
 };
 
 const PROVIDER_LABELS: Record<string, string> = {
@@ -13,18 +13,15 @@ const PROVIDER_LABELS: Record<string, string> = {
 };
 
 export default async function SettingsPage() {
-  // Auth gate already happened in dashboard/layout.tsx (this route nests
-  // under src/app/dashboard/, so it inherits that check for free) — this
-  // call is just to read the signed-in user's own info, same pattern as
-  // src/app/dashboard/page.tsx.
+  // Auth gate already happened in dashboard/layout.tsx; this call only reads
+  // the signed-in user's own info.
   const session = await auth();
   const user = session!.user;
 
   // The provider isn't on the session/JWT itself (see src/types/next-auth.d.ts
   // — only `id` was added there), so it's a best-effort read straight from
-  // Auth.js's own `accounts` table. Non-fatal: if this fails or comes back
-  // empty, the page still shows name/email rather than failing outright,
-  // since "which provider" is a nice-to-have, not load-bearing.
+  // Auth.js's own `accounts` table. Non-fatal: if this fails the page still
+  // shows name and email.
   let provider: string | null = null;
   try {
     provider = await getPrimaryProviderForUser(user.id);
@@ -32,34 +29,27 @@ export default async function SettingsPage() {
     provider = null;
   }
 
-  return (
-    <div className={styles.page}>
-      <header>
-        <h1>Settings</h1>
-        <p className={styles.intro}>
-          Your account details, as provided by whichever service you signed
-          in with.
-        </p>
-      </header>
+  const rows: [string, string][] = [
+    ["Name", user.name ?? "—"],
+    ["Email", user.email ?? "—"],
+    ...(provider ? ([["Signed in with", PROVIDER_LABELS[provider] ?? provider]] as [string, string][]) : []),
+  ];
 
-      <div className={styles.card}>
-        <div className={styles.row}>
-          <span className={styles.rowLabel}>Name</span>
-          <span className={styles.rowValue}>{user.name ?? "—"}</span>
-        </div>
-        <div className={styles.row}>
-          <span className={styles.rowLabel}>Email</span>
-          <span className={styles.rowValue}>{user.email ?? "—"}</span>
-        </div>
-        {provider && (
-          <div className={styles.row}>
-            <span className={styles.rowLabel}>Signed in with</span>
-            <span className={styles.providerBadge}>
-              {PROVIDER_LABELS[provider] ?? provider}
-            </span>
+  return (
+    <div className="max-w-3xl">
+      <Tag>settings</Tag>
+      <h1 className="mt-4 text-[clamp(2.25rem,5vw,4.5rem)] font-semibold leading-[0.95] tracking-[-0.04em]">Account</h1>
+      <p className="mt-4 max-w-[52ch] leading-relaxed text-muted">
+        Your account details, as provided by whichever service you signed in with.
+      </p>
+      <dl className="mt-10 border-t border-border">
+        {rows.map(([k, v]) => (
+          <div key={k} className="grid gap-1 border-b border-border py-4 sm:grid-cols-[12rem_1fr] sm:gap-6">
+            <dt className="font-mono text-[11px] uppercase tracking-[0.12em] text-muted">{k}</dt>
+            <dd className="font-mono text-sm">{v}</dd>
           </div>
-        )}
-      </div>
+        ))}
+      </dl>
     </div>
   );
 }

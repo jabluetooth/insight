@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import styles from "./ConfirmDialog.module.css";
 
 interface ConfirmDialogProps {
   open: boolean;
@@ -15,8 +14,8 @@ interface ConfirmDialogProps {
 }
 
 /**
- * Native <dialog>-backed confirm modal, styled to match the app's glass
- * design system — replaces window.confirm() so a destructive action doesn't
+ * Native <dialog>-backed confirm modal, styled to match the app's design
+ * system — replaces window.confirm() so a destructive action doesn't
  * break out into an unstyled browser dialog. <dialog> gives focus trapping,
  * Escape-to-close, and top-layer stacking for free; this component only adds
  * confirm/cancel intent tracking on top (see resultRef below), since the
@@ -72,22 +71,22 @@ export function ConfirmDialog({
   return (
     <dialog
       ref={dialogRef}
-      className={styles.dialog}
+      className="m-auto w-[min(28rem,calc(100vw-2rem))] rounded border border-border bg-surface p-0 text-foreground backdrop:bg-black/60"
       onClick={handleBackdropClick}
       aria-labelledby="confirm-dialog-title"
       aria-describedby="confirm-dialog-body"
     >
-      <div className={styles.content}>
-        <h2 id="confirm-dialog-title" className={styles.title}>
+      <div className="p-6">
+        <h2 id="confirm-dialog-title" className="text-xl font-semibold tracking-[-0.02em]">
           {title}
         </h2>
-        <p id="confirm-dialog-body" className={styles.body}>
+        <p id="confirm-dialog-body" className="mt-3 text-sm leading-relaxed text-muted">
           {body}
         </p>
-        <div className={styles.actions}>
+        <div className="mt-6 flex justify-end gap-2">
           <button
             type="button"
-            className={styles.cancelButton}
+            className="rounded border border-border px-3.5 py-2 font-mono text-xs uppercase tracking-[0.08em] text-muted transition-colors hover:text-foreground"
             onClick={() => {
               resultRef.current = "cancel";
               dialogRef.current?.close();
@@ -97,7 +96,7 @@ export function ConfirmDialog({
           </button>
           <button
             type="button"
-            className={`${styles.confirmButton} ${danger ? styles.confirmDanger : ""}`}
+            className={"rounded px-3.5 py-2 font-mono text-xs font-medium uppercase tracking-[0.08em] transition-transform active:scale-95 " + (danger ? "bg-danger text-background" : "bg-accent text-accent-foreground")}
             onClick={() => {
               resultRef.current = "confirm";
               dialogRef.current?.close();

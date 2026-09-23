@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import styles from "./dashboard.module.css";
+import { secondaryButtonClass } from "@/components/ui";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import type { ManageInstanceRevokeResult, RevokeInstanceRequestBody } from "@/lib/types";
 
@@ -52,14 +52,14 @@ export function RevokeInstanceButton({
     <div>
       <button
         type="button"
-        className={styles.revokeButton}
+        className={secondaryButtonClass + " hover:border-danger/60 hover:text-danger"}
         onClick={() => setConfirmOpen(true)}
         disabled={isPending}
       >
         {isPending ? "Revoking…" : "Revoke"}
       </button>
       {error && (
-        <p role="alert" className={styles.revokeErrorText}>
+        <p role="alert" className="mt-2 max-w-xs text-xs text-danger">
           {error}
         </p>
       )}
