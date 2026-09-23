@@ -1,0 +1,222 @@
+{
+  "id": "4821",
+  "finished": false,
+  "mode": "webhook",
+  "status": "error",
+  "startedAt": "2026-09-23T06:46:40.000Z",
+  "stoppedAt": "2026-09-23T06:46:41.200Z",
+  "workflowId": "wf4821",
+  "data": {
+    "startData": {},
+    "resultData": {
+      "runData": {
+        "Order Webhook": [
+          {
+            "startTime": 1758610000000,
+            "executionTime": 4,
+            "executionStatus": "success",
+            "source": [],
+            "data": {
+              "main": [
+                [
+                  {
+                    "json": {
+                      "headers": {
+                        "host": "n8n.example.com",
+                        "x-shopdesk-signature": "t=1758610000,v1=5f2b9c0a8e"
+                      },
+                      "body": {
+                        "orderId": "ORD-20931"
+                      }
+                    }
+                  }
+                ]
+              ]
+            }
+          }
+        ],
+        "Fetch Order": [
+          {
+            "startTime": 1758610000010,
+            "executionTime": 388,
+            "executionStatus": "success",
+            "source": [
+              {
+                "previousNode": "Order Webhook"
+              }
+            ],
+            "data": {
+              "main": [
+                [
+                  {
+                    "json": {
+                      "data": {
+                        "id": "ORD-20931",
+                        "customer": {
+                          "email": "dana@northwind.test",
+                          "name": "Dana Ruiz"
+                        },
+                        "total": 184.5,
+                        "currency": "USD"
+                      },
+                      "meta": {
+                        "apiVersion": "2026-09-01"
+                      }
+                    }
+                  }
+                ]
+              ]
+            }
+          }
+        ],
+        "Build Email": [
+          {
+            "startTime": 1758610000400,
+            "executionTime": 2,
+            "executionStatus": "error",
+            "source": [
+              {
+                "previousNode": "Fetch Order"
+              }
+            ],
+            "error": {
+              "name": "NodeOperationError",
+              "message": "Cannot read properties of undefined (reading 'email')",
+              "description": "There was a problem evaluating the expression {{ $json.customer.email }} in the field 'to'",
+              "node": {
+                "name": "Build Email",
+                "type": "n8n-nodes-base.set"
+              }
+            }
+          }
+        ]
+      },
+      "lastNodeExecuted": "Build Email",
+      "error": {
+        "name": "NodeOperationError",
+        "message": "Cannot read properties of undefined (reading 'email')",
+        "description": "There was a problem evaluating the expression {{ $json.customer.email }} in the field 'to'",
+        "node": {
+          "name": "Build Email",
+          "type": "n8n-nodes-base.set"
+        }
+      }
+    }
+  },
+  "workflowData": {
+    "name": "Order confirmations",
+    "nodes": [
+      {
+        "parameters": {
+          "path": "orders",
+          "httpMethod": "POST"
+        },
+        "id": "order-webhook",
+        "name": "Order Webhook",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          0,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "url": "=https://api.shopdesk.io/v2/orders/{{ $json.body.orderId }}",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer shpd_demo_7Qm2Vx9Rk4Lp8Tz3Nw6Y"
+              }
+            ]
+          }
+        },
+        "id": "fetch-order",
+        "name": "Fetch Order",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          220,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "name": "to",
+                "value": "={{ $json.customer.email }}",
+                "type": "string"
+              },
+              {
+                "name": "subject",
+                "value": "=Order {{ $json.id }} confirmed",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "id": "build-email",
+        "name": "Build Email",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          440,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "sendTo": "={{ $json.to }}",
+          "subject": "={{ $json.subject }}"
+        },
+        "id": "send-confirmation",
+        "name": "Send Confirmation",
+        "type": "n8n-nodes-base.gmail",
+        "typeVersion": 2.1,
+        "position": [
+          660,
+          0
+        ]
+      }
+    ],
+    "connections": {
+      "Order Webhook": {
+        "main": [
+          [
+            {
+              "node": "Fetch Order",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Fetch Order": {
+        "main": [
+          [
+            {
+              "node": "Build Email",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Build Email": {
+        "main": [
+          [
+            {
+              "node": "Send Confirmation",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    }
+  }
+}

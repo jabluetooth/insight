@@ -1,0 +1,44 @@
+{
+  "name": "insight-n8n",
+  "version": "1.0.0",
+  "description": "Find out why an n8n execution failed: the failing node, the likely root cause, a confidence score and a fix. Secrets are redacted on your machine first.",
+  "keywords": [
+    "n8n",
+    "debugging",
+    "root-cause",
+    "workflow",
+    "automation",
+    "cli",
+    "llm"
+  ],
+  "homepage": "https://insightby.filheinzrelatorre.com/get-started",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jabluetooth/insight.git",
+    "directory": "cli"
+  },
+  "bugs": {
+    "url": "https://github.com/jabluetooth/insight/issues"
+  },
+  "author": "Fil Heinz O. Re La Torre",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "insight": "bin/insight.mjs",
+    "insight-n8n": "bin/insight.mjs"
+  },
+  "files": [
+    "bin/",
+    "src/",
+    "fixtures/",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18.17.0"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "prepublishOnly": "node --test test/*.test.mjs"
+  }
+}
