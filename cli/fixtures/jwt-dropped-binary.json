@@ -1,0 +1,192 @@
+{
+  "id": "5388",
+  "finished": false,
+  "mode": "webhook",
+  "status": "error",
+  "startedAt": "2026-09-23T06:46:40.000Z",
+  "stoppedAt": "2026-09-23T06:46:41.200Z",
+  "workflowId": "wf5388",
+  "data": {
+    "startData": {},
+    "resultData": {
+      "runData": {
+        "Contract Upload": [
+          {
+            "startTime": 1758610000000,
+            "executionTime": 6,
+            "executionStatus": "success",
+            "source": [],
+            "data": {
+              "main": [
+                [
+                  {
+                    "json": {
+                      "headers": {
+                        "authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJjbGllbnRJZCI6ImNsXzkxMiIsInJvbGUiOiJwb3J0YWwifQ.q3Vd8mTz0kP2rXb7YcN1wLs",
+                        "content-type": "multipart/form-data"
+                      },
+                      "body": {
+                        "clientId": "cl_912"
+                      }
+                    },
+                    "binary": {
+                      "data": {
+                        "mimeType": "application/pdf",
+                        "fileName": "msa-signed.pdf",
+                        "fileSize": "218 kB"
+                      }
+                    }
+                  }
+                ]
+              ]
+            }
+          }
+        ],
+        "Verify JWT": [
+          {
+            "startTime": 1758610000012,
+            "executionTime": 3,
+            "executionStatus": "success",
+            "source": [
+              {
+                "previousNode": "Contract Upload"
+              }
+            ],
+            "data": {
+              "main": [
+                [
+                  {
+                    "json": {
+                      "payload": {
+                        "clientId": "cl_912",
+                        "role": "portal"
+                      }
+                    }
+                  }
+                ]
+              ]
+            }
+          }
+        ],
+        "Upload Contract": [
+          {
+            "startTime": 1758610000020,
+            "executionTime": 2,
+            "executionStatus": "error",
+            "source": [
+              {
+                "previousNode": "Verify JWT"
+              }
+            ],
+            "error": {
+              "name": "NodeOperationError",
+              "message": "This operation expects the node's input data to contain a binary file 'data', but none was found [item 0]",
+              "description": "Make sure that the previous node outputs a binary file",
+              "node": {
+                "name": "Upload Contract",
+                "type": "n8n-nodes-base.googleDrive"
+              }
+            }
+          }
+        ]
+      },
+      "lastNodeExecuted": "Upload Contract",
+      "error": {
+        "name": "NodeOperationError",
+        "message": "This operation expects the node's input data to contain a binary file 'data', but none was found [item 0]",
+        "description": "Make sure that the previous node outputs a binary file",
+        "node": {
+          "name": "Upload Contract",
+          "type": "n8n-nodes-base.googleDrive"
+        }
+      }
+    }
+  },
+  "workflowData": {
+    "name": "Client contract intake",
+    "nodes": [
+      {
+        "parameters": {
+          "path": "contracts",
+          "httpMethod": "POST",
+          "options": {
+            "binaryPropertyName": "data"
+          }
+        },
+        "id": "contract-upload",
+        "name": "Contract Upload",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          0,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "verify",
+          "token": "={{ $json.headers.authorization.split(' ')[1] }}"
+        },
+        "id": "verify-jwt",
+        "name": "Verify JWT",
+        "type": "n8n-nodes-base.jwt",
+        "typeVersion": 1,
+        "position": [
+          220,
+          0
+        ],
+        "credentials": {
+          "jwtAuth": {
+            "id": "4",
+            "name": "Portal JWT secret"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "upload",
+          "inputDataFieldName": "data",
+          "name": "={{ $json.payload.clientId }}-contract.pdf"
+        },
+        "id": "upload-contract",
+        "name": "Upload Contract",
+        "type": "n8n-nodes-base.googleDrive",
+        "typeVersion": 3,
+        "position": [
+          440,
+          0
+        ],
+        "credentials": {
+          "googleDriveOAuth2Api": {
+            "id": "9",
+            "name": "Drive - legal"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Contract Upload": {
+        "main": [
+          [
+            {
+              "node": "Verify JWT",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Verify JWT": {
+        "main": [
+          [
+            {
+              "node": "Upload Contract",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    }
+  }
+}

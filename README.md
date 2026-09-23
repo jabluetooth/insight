@@ -2,7 +2,8 @@
 
 An AI root-cause copilot for n8n workflow failures. Paste a failed execution - or connect an n8n instance for ongoing monitoring - and get a plain-English diagnosis of which node broke, why, and a suggested fix, instead of reading raw execution JSON by hand.
 
-[![Live](https://img.shields.io/badge/Live_Demo-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://insightby.filheinzrelatorre.com)
+[![Website](https://img.shields.io/badge/Website-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://insightby.filheinzrelatorre.com)
+[![npm](https://img.shields.io/npm/v/insight-n8n?style=for-the-badge&logo=npm&logoColor=white&color=CB3837)](https://www.npmjs.com/package/insight-n8n)
 
 ![n8n](https://img.shields.io/badge/n8n-EA4B71?style=for-the-badge&logo=n8n&logoColor=white)
 ![Next.js](https://img.shields.io/badge/Next.js-black?style=for-the-badge&logo=next.js&logoColor=white)
@@ -13,7 +14,21 @@ An AI root-cause copilot for n8n workflow failures. Paste a failed execution - o
 
 <p align="center"><img src="docs/demo.gif" alt="Insight demo" width="800"></p>
 
-Try it with no signup required at `/diagnose`. Full product spec, architecture rationale, and eval plan: [PRD.md](PRD.md).
+**Website:** [insightby.filheinzrelatorre.com](https://insightby.filheinzrelatorre.com) - [how it works](https://insightby.filheinzrelatorre.com/how-it-works) · [security](https://insightby.filheinzrelatorre.com/security) · [get started](https://insightby.filheinzrelatorre.com/get-started) · [diagnose a failure](https://insightby.filheinzrelatorre.com/diagnose)
+
+Full product spec, architecture rationale, and eval plan: [PRD.md](PRD.md).
+
+## Try it before signing up
+
+```bash
+npx insight-n8n demo                                          # a bundled sample failure
+npx insight-n8n diagnose execution.json                       # your own exported execution
+npx insight-n8n diagnose --id 4821 --url https://n8n.example.com
+```
+
+No account and no install. Secrets are redacted on your machine before anything is printed or sent. With your own `GROQ_API_KEY` the diagnosis runs locally and only Groq sees the redacted execution; without one it goes to the same hosted pipeline as the website. `insight inspect` shows the node trace, the error and what was redacted fully offline. See [`cli/README.md`](cli/README.md).
+
+Or paste an execution on the website's [`/diagnose`](https://insightby.filheinzrelatorre.com/diagnose) page, also with no account.
 
 ## How it works
 
@@ -43,7 +58,8 @@ Slack alert (connected-instance mode only)
 
 | Path | What it is |
 |---|---|
-| [`frontend/`](frontend/) | The Next.js app - see [`frontend/README.md`](frontend/README.md) for local setup. |
+| [`frontend/`](frontend/) | The Next.js app: public site, `/diagnose` and the dashboard - see [`frontend/README.md`](frontend/README.md) for local setup. |
+| [`cli/`](cli/) | `insight-n8n` on npm: diagnose a failed execution from the terminal, zero dependencies - see [`cli/README.md`](cli/README.md). |
 | [`workflows/`](workflows/) | Two files a real user imports into *their own* n8n instance to start monitoring it: an Error Trigger template that pushes failures to Insight, and a workflow that fails on command for testing the wiring. See [`workflows/README.md`](workflows/README.md). |
 | [`migrations/`](migrations/) | SQL run once against the Postgres database this app and the n8n backend share: Auth.js's own tables, plus `connected_instances` / `diagnoses`. |
 | [`PRD.md`](PRD.md) | The full product spec this was built from - problem statement, architecture decisions and why, security model, evaluation plan, and what's deliberately out of scope for v1 (e.g. auto-applying a suggested fix - see PRD §2.2 and §11). |
@@ -70,6 +86,8 @@ To get diagnoses on your own workflow failures rather than just the public paste
 This is a deliberate, disclosed change to Insight's trust model: as of the "Add workflow" feature, the API key you provide is used for a few narrowly-scoped **write** calls into your instance (create/activate Insight's own template, update one workflow's Error Workflow setting only - never that workflow's own nodes or logic), not just reads. See [PRD.md §5](PRD.md) for the exact endpoint allowlist. A manual fallback (import the template yourself, no write access needed) is still documented in [`workflows/README.md`](workflows/README.md).
 
 ## Changelog
+
+- **2026-09-23** - Rebuilt the website on the same design system as [Relay](https://github.com/jabluetooth/relay) (Tailwind v4, Framer Motion, Lucide; masked line reveals, a scroll-driven pipeline, sticky section navigation), with new How it works, Security and Get started pages, an animated execution demo, and an interactive confidence dial. The dashboard gets an app shell and shares one diagnosis view with `/diagnose`. Public pages are now statically rendered: the root layout no longer reads the session. Added `insight-n8n`, a zero-dependency CLI in [`cli/`](cli/) so the core diagnosis can be tried from a terminal with no account, and CI for both.
 
 - **2026-08-12** - Security audit fixes: closed an SSRF gap where a user-supplied n8n instance URL was only syntax-checked, not restricted (now HTTPS-only, no localhost/internal hostnames/bare IPs); the two new "Add workflow" API routes no longer relay raw upstream/database error text to the browser; enabled Postgres TLS certificate verification (was `rejectUnauthorized: false`); added format validation for instance/workflow ids; added a per-user rate limit and a client-side single-flight guard plus an atomic conditional update in n8n to prevent concurrent "Add workflow" clicks from creating duplicate templates; the public diagnose page's visitor-supplied API key is now cleared from state right after use; added an optional `AUTH_ALLOWED_EMAILS` sign-in allowlist (was previously proposed in the PRD but never implemented); upgraded Next.js to 16.3.0 and resolved all `npm audit` findings; added baseline security headers (CSP, X-Frame-Options, Referrer-Policy).
 - **2026-08-12** - Added the "Add workflow" auto-install feature described above - the biggest change to Insight's trust model since launch, see PRD.md §5/§6.6a for the full write-endpoint allowlist this introduced.

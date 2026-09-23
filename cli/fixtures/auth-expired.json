@@ -1,0 +1,152 @@
+{
+  "id": "5170",
+  "finished": false,
+  "mode": "trigger",
+  "status": "error",
+  "startedAt": "2026-09-23T06:46:40.000Z",
+  "stoppedAt": "2026-09-23T06:46:41.200Z",
+  "workflowId": "wf5170",
+  "data": {
+    "startData": {},
+    "resultData": {
+      "runData": {
+        "Every Morning": [
+          {
+            "startTime": 1758610000000,
+            "executionTime": 1,
+            "executionStatus": "success",
+            "source": [],
+            "data": {
+              "main": [
+                [
+                  {
+                    "json": {
+                      "timestamp": "2026-09-23T07:00:00.012+08:00"
+                    }
+                  }
+                ]
+              ]
+            }
+          }
+        ],
+        "Get Invoices": [
+          {
+            "startTime": 1758610000005,
+            "executionTime": 611,
+            "executionStatus": "error",
+            "source": [
+              {
+                "previousNode": "Every Morning"
+              }
+            ],
+            "error": {
+              "name": "NodeApiError",
+              "message": "Authorization failed - please check your credentials",
+              "description": "401 - \"{\\\"error\\\":\\\"invalid_grant\\\",\\\"error_description\\\":\\\"refresh token has expired\\\"}\"",
+              "httpCode": "401",
+              "node": {
+                "name": "Get Invoices",
+                "type": "n8n-nodes-base.httpRequest"
+              }
+            }
+          }
+        ]
+      },
+      "lastNodeExecuted": "Get Invoices",
+      "error": {
+        "name": "NodeApiError",
+        "message": "Authorization failed - please check your credentials",
+        "description": "401 - \"{\\\"error\\\":\\\"invalid_grant\\\",\\\"error_description\\\":\\\"refresh token has expired\\\"}\"",
+        "httpCode": "401",
+        "node": {
+          "name": "Get Invoices",
+          "type": "n8n-nodes-base.httpRequest"
+        }
+      }
+    }
+  },
+  "workflowData": {
+    "name": "Morning invoice digest",
+    "nodes": [
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "field": "cronExpression",
+                "expression": "0 7 * * 1-5"
+              }
+            ]
+          }
+        },
+        "id": "every-morning",
+        "name": "Every Morning",
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          0,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "url": "https://api.xero.com/api.xro/2.0/Invoices?where=Status%3D%22AUTHORISED%22",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "xeroOAuth2Api"
+        },
+        "id": "get-invoices",
+        "name": "Get Invoices",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          220,
+          0
+        ],
+        "credentials": {
+          "xeroOAuth2Api": {
+            "id": "12",
+            "name": "Xero - finance (prod)"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "channel": "#finance",
+          "text": "={{ $json.Invoices.length }} invoices awaiting payment"
+        },
+        "id": "post-to-slack",
+        "name": "Post to Slack",
+        "type": "n8n-nodes-base.slack",
+        "typeVersion": 2.2,
+        "position": [
+          440,
+          0
+        ]
+      }
+    ],
+    "connections": {
+      "Every Morning": {
+        "main": [
+          [
+            {
+              "node": "Get Invoices",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get Invoices": {
+        "main": [
+          [
+            {
+              "node": "Post to Slack",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    }
+  }
+}

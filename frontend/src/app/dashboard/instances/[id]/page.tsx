@@ -3,23 +3,31 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { getDiagnosesForInstance, getInstanceById } from "@/lib/dashboard-data";
-import { ConfidenceMeter } from "@/components/ConfidenceMeter";
 import { WorkflowList } from "@/components/WorkflowList";
-import styles from "../../dashboard.module.css";
+import { DiagnosisView } from "@/components/DiagnosisView";
+import { Notice } from "@/components/ui";
+import Tag from "@/components/marketing/Tag";
 
 export const metadata: Metadata = {
-  title: "Diagnosis log — Insight",
+  title: "Diagnosis log",
 };
 
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
 }
 
-export default async function InstanceDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+function BackLink() {
+  return (
+    <Link
+      href="/dashboard"
+      className="font-mono text-xs uppercase tracking-[0.08em] text-muted underline decoration-border underline-offset-4 hover:text-foreground"
+    >
+      ← My instances
+    </Link>
+  );
+}
+
+export default async function InstanceDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const session = await auth();
   const ownerUserId = session!.user.id;
@@ -42,16 +50,11 @@ export default async function InstanceDetailPage({
 
   if (loadError) {
     return (
-      <div>
-        <Link href="/dashboard" className={styles.backLink}>
-          ← My instances
-        </Link>
-        <div className={styles.loadError} role="alert">
-          <div>
-            <p className={styles.loadErrorTitle}>Couldn&apos;t load this instance</p>
-            <p className={styles.loadErrorBody}>{loadError}</p>
-          </div>
-        </div>
+      <div className="space-y-6">
+        <BackLink />
+        <Notice tone="error" title="Couldn't load this instance" role="alert">
+          {loadError}
+        </Notice>
       </div>
     );
   }
@@ -64,84 +67,61 @@ export default async function InstanceDetailPage({
     diagnoses = await getDiagnosesForInstance(instance.id);
   } catch (err) {
     return (
-      <div>
-        <Link href="/dashboard" className={styles.backLink}>
-          ← My instances
-        </Link>
-        <div className={styles.loadError} role="alert">
-          <div>
-            <p className={styles.loadErrorTitle}>Couldn&apos;t load the diagnosis log</p>
-            <p className={styles.loadErrorBody}>
-              {err instanceof Error ? err.message : "Something went wrong reading diagnoses."}
-            </p>
-          </div>
-        </div>
+      <div className="space-y-6">
+        <BackLink />
+        <Notice tone="error" title="Couldn't load the diagnosis log" role="alert">
+          {err instanceof Error ? err.message : "Something went wrong reading diagnoses."}
+        </Notice>
       </div>
     );
   }
 
   return (
     <div>
-      <Link href="/dashboard" className={styles.backLink}>
-        ← My instances
-      </Link>
-      <div className={styles.pageHeader}>
-        <div>
-          <h1 className={styles.pageHeading}>{instance.label}</h1>
-          <p className={styles.pageSubtitle}>{instance.baseUrl}</p>
-        </div>
+      <BackLink />
+      <div className="mt-8">
+        <Tag>instance</Tag>
+        <h1 className="mt-4 text-[clamp(2.25rem,5vw,4.5rem)] font-semibold leading-[0.95] tracking-[-0.04em]">{instance.label}</h1>
+        <p className="mt-3 flex flex-wrap gap-x-4 font-mono text-xs text-muted">
+          <span>{instance.baseUrl}</span>
+          <span className={instance.status === "active" ? "text-success" : ""}>
+            {instance.status === "active" ? "● active" : "○ revoked"}
+          </span>
+        </p>
       </div>
 
       <WorkflowList instanceId={instance.id} />
 
-      {diagnoses.length === 0 ? (
-        <div className={styles.emptyState}>
-          <p className={styles.emptyStateTitle}>No diagnoses yet</p>
-          <p className={styles.emptyStateBody}>
-            Once this instance reports a failed execution via its Error
-            Trigger webhook, the diagnosis will show up here.
-          </p>
+      <section className="mt-[clamp(3rem,6vw,5rem)]" aria-labelledby="log-heading">
+        <div className="mb-4 flex items-baseline justify-between gap-4">
+          <h2 id="log-heading" className="font-mono text-[11px] uppercase tracking-[0.12em] text-muted">
+            Diagnosis log
+          </h2>
+          <span className="font-mono text-xs text-muted">{diagnoses.length} total</span>
         </div>
-      ) : (
-        <div className={styles.diagnosisList}>
-          {diagnoses.map((d) => (
-            <div key={d.id} className={styles.diagnosisCard}>
-              <div className={styles.diagnosisHeader}>
-                <span className={styles.diagnosisTimestamp}>{formatDate(d.createdAt)}</span>
-                {d.rootCauseCategory && (
-                  <span className={styles.categoryBadgeMuted}>{d.rootCauseCategory}</span>
-                )}
-              </div>
 
-              {d.failingNode && (
-                <div className={styles.diagnosisRow}>
-                  <p className={styles.diagnosisRowLabel}>Failing node</p>
-                  <p className={styles.nodeValueMono}>{d.failingNode}</p>
+        {diagnoses.length === 0 ? (
+          <div className="border-y border-border py-8">
+            <p className="text-xl font-semibold tracking-[-0.02em]">No diagnoses yet.</p>
+            <p className="mt-2 max-w-[58ch] leading-relaxed text-muted">
+              Once this instance reports a failed execution through its Error Trigger, the diagnosis shows up here.
+            </p>
+          </div>
+        ) : (
+          <ol className="border-t border-border">
+            {diagnoses.map((d) => (
+              <li key={d.id} className="grid gap-x-10 gap-y-4 border-b border-border py-8 lg:grid-cols-[12rem_minmax(0,1fr)]">
+                <div className="space-y-1 font-mono text-xs text-muted">
+                  <p className="text-foreground">{formatDate(d.createdAt)}</p>
+                  <p>execution {d.executionId}</p>
+                  {d.source && <p>via {d.source}</p>}
                 </div>
-              )}
-
-              <div className={styles.diagnosisRow}>
-                <p className={styles.diagnosisRowLabel}>Confidence</p>
-                <ConfidenceMeter confidence={d.confidence} />
-              </div>
-
-              {d.explanation && (
-                <div className={styles.diagnosisRow}>
-                  <p className={styles.diagnosisRowLabel}>What likely happened</p>
-                  <p className={styles.plainText}>{d.explanation}</p>
-                </div>
-              )}
-
-              {d.suggestedFix && (
-                <div className={styles.diagnosisRow}>
-                  <p className={styles.diagnosisRowLabel}>Suggested fix</p>
-                  <pre className={styles.suggestedFixBlock}>{d.suggestedFix}</pre>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
+                <DiagnosisView d={d} />
+              </li>
+            ))}
+          </ol>
+        )}
+      </section>
     </div>
   );
 }
